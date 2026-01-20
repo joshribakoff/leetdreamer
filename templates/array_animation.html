@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #e94560;
+            text-align: center;
+        }
+
+        .target-display {
+            font-size: 20px;
+            color: #16c79a;
+            text-align: center;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 60px 20px;
+        }
+
+        .array-cell {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            background: #0f3460;
+            border: 3px solid #16c79a;
+            border-radius: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .array-cell.highlight-left {
+            background: #e94560;
+            border-color: #e94560;
+            transform: scale(1.1);
+        }
+
+        .array-cell.highlight-right {
+            background: #00b4d8;
+            border-color: #00b4d8;
+            transform: scale(1.1);
+        }
+
+        .array-cell.highlight-both {
+            background: linear-gradient(135deg, #e94560 50%, #00b4d8 50%);
+            border-color: #f7d716;
+            transform: scale(1.15);
+        }
+
+        .array-cell.highlight-sum {
+            box-shadow: 0 0 20px rgba(247, 215, 22, 0.6);
+        }
+
+        .array-cell.found {
+            background: #16c79a;
+            border-color: #16c79a;
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(22, 199, 154, 0.8);
+        }
+
+        .index-label {
+            position: absolute;
+            bottom: -28px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -40px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .pointer.left-pointer {
+            background: #e94560;
+            color: white;
+        }
+
+        .pointer.right-pointer {
+            background: #00b4d8;
+            color: white;
+        }
+
+        .pointer.visible {
+            opacity: 1;
+        }
+
+        .message-display {
+            font-size: 24px;
+            color: #f7d716;
+            text-align: center;
+            min-height: 36px;
+            transition: opacity 0.3s ease;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Animation keyframes for pointer movement */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .array-cell.animating {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">{{ title }}</h1>
+        <div class="target-display">Target: {{ target }}</div>
+        <div class="array-container" id="arrayContainer">
+            {% for value in array %}
+            <div class="array-cell" data-index="{{ loop.index0 }}">
+                {{ value }}
+                <span class="index-label">{{ loop.index0 }}</span>
+                <span class="pointer left-pointer" id="leftPtr{{ loop.index0 }}">L</span>
+                <span class="pointer right-pointer" id="rightPtr{{ loop.index0 }}">R</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="message-display" id="message"></div>
+        <div class="step-indicator" id="stepIndicator"></div>
+    </div>
+
+    <script>
+        // Scene data from template
+        const steps = {{ steps | tojson | safe }};
+        const timing = {{ timing | tojson | safe }};
+        const arrayLength = {{ array | length }};
+
+        // Calculate total duration and set for recorder
+        const totalDuration = timing.reduce((sum, t) => sum + t, 0);
+        window.animationDuration = totalDuration;
+
+        // DOM elements
+        const cells = document.querySelectorAll('.array-cell');
+        const messageEl = document.getElementById('message');
+        const stepIndicatorEl = document.getElementById('stepIndicator');
+
+        // Get all pointer elements
+        function getPointers() {
+            return {
+                left: Array.from({ length: arrayLength }, (_, i) =>
+                    document.getElementById(`leftPtr${i}`)),
+                right: Array.from({ length: arrayLength }, (_, i) =>
+                    document.getElementById(`rightPtr${i}`))
+            };
+        }
+
+        // Clear all highlights and pointers
+        function clearState() {
+            cells.forEach(cell => {
+                cell.classList.remove(
+                    'highlight-left',
+                    'highlight-right',
+                    'highlight-both',
+                    'highlight-sum',
+                    'found',
+                    'animating'
+                );
+            });
+
+            const pointers = getPointers();
+            pointers.left.forEach(p => p && p.classList.remove('visible'));
+            pointers.right.forEach(p => p && p.classList.remove('visible'));
+        }
+
+        // Apply state for a step
+        function applyState(state, stepIndex) {
+            clearState();
+
+            const pointers = getPointers();
+            const { left, right, highlight, message } = state;
+
+            // Show pointers
+            if (left !== null && left !== undefined && pointers.left[left]) {
+                pointers.left[left].classList.add('visible');
+            }
+            if (right !== null && right !== undefined && pointers.right[right]) {
+                pointers.right[right].classList.add('visible');
+            }
+
+            // Apply cell highlights
+            if (left !== null && left !== undefined && cells[left]) {
+                if (left === right) {
+                    cells[left].classList.add('highlight-both');
+                } else {
+                    cells[left].classList.add('highlight-left');
+                }
+            }
+            if (right !== null && right !== undefined && cells[right] && left !== right) {
+                cells[right].classList.add('highlight-right');
+            }
+
+            // Apply special highlights based on highlight type
+            if (highlight === 'sum' && left !== null && right !== null) {
+                cells[left].classList.add('highlight-sum');
+                cells[right].classList.add('highlight-sum');
+            } else if (highlight === 'found' && left !== null && right !== null) {
+                cells[left].classList.add('found');
+                cells[right].classList.add('found');
+            } else if (highlight === 'left_move' && left !== null && cells[left]) {
+                cells[left].classList.add('animating');
+            } else if (highlight === 'right_move' && right !== null && cells[right]) {
+                cells[right].classList.add('animating');
+            }
+
+            // Update message
+            messageEl.textContent = message || '';
+
+            // Update step indicator
+            stepIndicatorEl.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+        }
+
+        // Timeline execution
+        let currentStep = 0;
+        let elapsedTime = 0;
+
+        function runTimeline() {
+            if (currentStep >= steps.length) {
+                return;
+            }
+
+            const step = steps[currentStep];
+            const duration = timing[currentStep] * 1000; // Convert to ms
+
+            applyState(step.state, currentStep);
+
+            setTimeout(() => {
+                currentStep++;
+                runTimeline();
+            }, duration);
+        }
+
+        // Signal that animation is ready and start
+        window.addEventListener('load', () => {
+            window.animationReady = true;
+            // Small delay to ensure everything is rendered
+            setTimeout(runTimeline, 100);
+        });
+    </script>
+</body>
+</html>

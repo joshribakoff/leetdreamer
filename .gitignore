@@ -1,0 +1,23 @@
+# Output files
+output/
+
+# Piper binary (large, platform-specific)
+piper/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Legacy POC files (kept for reference but not tracked)
+two_pointers/
+record.py
+media/

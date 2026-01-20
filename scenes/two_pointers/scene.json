@@ -1,0 +1,17 @@
+{
+  "id": "two_pointers_optimal",
+  "title": "Two Pointers: O(n)",
+  "description": "Two pointer technique on sorted array",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [2, 7, 11, 15], "target": 9, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "init", "narration": "The two pointer approach starts with pointers at both ends. Left at two, right at fifteen.", "state": {"left": 0, "right": 3, "highlight": null, "message": "Initialize: L=0, R=3"}},
+    {"id": "sum1", "narration": "Two plus fifteen equals seventeen. That's bigger than nine, so we move the right pointer left.", "state": {"left": 0, "right": 3, "highlight": "sum", "message": "2 + 15 = 17 > 9"}},
+    {"id": "move1", "narration": "Why? Because the array is sorted. If seventeen is too big, then two plus anything larger than eleven is also too big.", "state": {"left": 0, "right": 2, "highlight": "right_move", "message": "Move R left"}},
+    {"id": "sum2", "narration": "Now two plus eleven equals thirteen. Still too big. Move right again.", "state": {"left": 0, "right": 2, "highlight": "sum", "message": "2 + 11 = 13 > 9"}},
+    {"id": "move2", "narration": "We've eliminated fifteen and eleven from consideration.", "state": {"left": 0, "right": 1, "highlight": "right_move", "message": "Move R left"}},
+    {"id": "found", "narration": "Finally, two plus seven equals nine. Found it in just three comparisons. That's O of n. The key insight: the sorted property guarantees we never miss the answer by moving inward.", "state": {"left": 0, "right": 1, "highlight": "found", "message": "2 + 7 = 9 ✓"}}
+  ]
+}
