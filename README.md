@@ -4,7 +4,11 @@
 
 A pipeline that generates narrated algorithm visualization videos. Because staring at code for 3 hours is less effective than watching a robot explain Two Pointers in 37 seconds.
 
-![Two Pointers Animation](docs/screenshots/hero.png)
+### 🎥 See it in action
+
+[![Two Pointers Animation - Click to Watch](https://img.youtube.com/vi/6jwh-N3D8l4/maxresdefault.jpg)](https://www.youtube.com/watch?v=6jwh-N3D8l4)
+
+*👆 Click to watch the generated video on YouTube*
 
 ## The Problem
 
