@@ -57,6 +57,7 @@ class HTMLAnimationAdapter(AnimationAdapter):
             "array_pointers": "array_animation.html",
             "array": "array_animation.html",
             "problem_statement": "problem_statement.html",
+            "hash_table": "hash_table.html",
         }
         return template_map.get(viz_type, "array_animation.html")
 
@@ -93,13 +94,7 @@ class HTMLAnimationAdapter(AnimationAdapter):
             {
                 "id": step.id,
                 "narration": step.narration,
-                "state": {
-                    "left": step.state.left,
-                    "right": step.state.right,
-                    "highlight": step.state.highlight,
-                    "message": step.state.message,
-                    "reveal": step.state.reveal,
-                }
+                "state": step.state.model_dump(),
             }
             for step in spec.steps
         ]

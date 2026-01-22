@@ -17,12 +17,25 @@ class StepState(BaseModel):
         highlight: Highlight mode string OR list of indices to highlight
         message: Display message for this state
         reveal: List of elements to reveal (for problem_statement visualizations)
+        current_index: Current array index (for hash_table visualizations)
+        stored_indices: Indices already stored in map (for hash_table visualizations)
+        hashmap_entries: List of {value, index} entries (for hash_table visualizations)
+        lookup_value: Value being looked up in map (for hash_table visualizations)
+        found_pair: Pair of indices found (for hash_table visualizations)
+        complement: Complement value being sought (for hash_table visualizations)
     """
     left: Optional[int] = None
     right: Optional[int] = None
     highlight: Optional[Union[str, List[int]]] = None
     message: Optional[str] = None
     reveal: Optional[List[str]] = None
+    # Hash table visualization fields
+    current_index: Optional[int] = None
+    stored_indices: Optional[List[int]] = None
+    hashmap_entries: Optional[List[Dict[str, Any]]] = None
+    lookup_value: Optional[int] = None
+    found_pair: Optional[List[int]] = None
+    complement: Optional[int] = None
 
 
 class Step(BaseModel):
