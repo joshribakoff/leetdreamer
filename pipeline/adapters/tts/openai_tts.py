@@ -71,15 +71,16 @@ class OpenAITTSAdapter(TTSAdapter):
     def name(self) -> str:
         return f"openai_{self.model}_{self.voice}"
 
+    @property
+    def output_extension(self) -> str:
+        return ".mp3"
+
     def generate(self, text: str, output_path: Path) -> Path:
         """Generate audio file from text using OpenAI TTS API."""
         if not text or not text.strip():
             raise OpenAITTSError("Text cannot be empty")
 
         output_path = Path(output_path)
-        # Force .mp3 extension for OpenAI output
-        if output_path.suffix != ".mp3":
-            output_path = output_path.with_suffix(".mp3")
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         client = self._get_client()

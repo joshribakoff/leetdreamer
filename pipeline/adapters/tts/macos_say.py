@@ -41,6 +41,10 @@ class MacOSSayAdapter(TTSAdapter):
         """Adapter identifier for logging."""
         return f"macos_say_{self.voice}"
 
+    @property
+    def output_extension(self) -> str:
+        return ".aiff"
+
     def generate(self, text: str, output_path: Path) -> Path:
         """Generate audio file from text using macOS say command.
 

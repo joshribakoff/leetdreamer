@@ -27,6 +27,12 @@ class TTSAdapter(ABC):
         """Adapter identifier for logging."""
         pass
 
+    @property
+    @abstractmethod
+    def output_extension(self) -> str:
+        """File extension for generated audio (e.g., '.wav', '.mp3', '.aiff')."""
+        pass
+
     @abstractmethod
     def generate(self, text: str, output_path: Path) -> Path:
         """Generate audio file from text.

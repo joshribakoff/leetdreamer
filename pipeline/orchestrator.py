@@ -131,7 +131,7 @@ class PipelineOrchestrator:
             narrations = scene_spec.get_narrations()
 
             for i, narration in enumerate(narrations):
-                audio_path = scene_output_dir / f"step_{i}.aiff"
+                audio_path = scene_output_dir / f"step_{i}{self.tts.output_extension}"
                 logger.info(f"[{scene_id}]   Generating audio for step {i}: {narration[:50]}...")
 
                 self.tts.generate(narration, audio_path)

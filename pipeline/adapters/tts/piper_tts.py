@@ -46,15 +46,16 @@ class PiperTTSAdapter(TTSAdapter):
     def name(self) -> str:
         return f"piper_{self.model_path.stem}"
 
+    @property
+    def output_extension(self) -> str:
+        return ".wav"
+
     def generate(self, text: str, output_path: Path) -> Path:
         """Generate audio file from text using Piper."""
         if not text or not text.strip():
             raise PiperTTSError("Text cannot be empty")
 
         output_path = Path(output_path)
-        # Piper outputs WAV
-        if output_path.suffix != ".wav":
-            output_path = output_path.with_suffix(".wav")
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         cmd = [
