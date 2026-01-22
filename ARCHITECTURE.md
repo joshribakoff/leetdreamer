@@ -146,6 +146,21 @@ animations/
 
 ---
 
+## Design Principles
+
+### Adapter Encapsulation
+
+**Adapter-specific details must stay inside the adapter.** The orchestrator and other components should not hardcode assumptions about adapter behavior.
+
+Examples:
+- **Output formats**: Each TTS adapter declares its `output_extension` (`.aiff`, `.wav`, `.mp3`). The orchestrator uses `self.tts.output_extension` rather than hardcoding `.aiff`.
+- **Dependencies**: Adapters handle their own lazy-loading of dependencies (e.g., OpenAI client, Piper models).
+- **Configuration**: Adapter-specific config (voice, model, paths) lives in the adapter constructor.
+
+This enables truly swappable adapters without touching orchestrator code.
+
+---
+
 ## Adapter Interfaces
 
 ### TTSAdapter (Abstract Base)
