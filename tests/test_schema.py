@@ -8,7 +8,15 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from pipeline.schema import SceneSpec, Step, StepState, VisualizationConfig
+from pipeline.schema import (
+    PRESET_THEMES,
+    SceneSpec,
+    Step,
+    StepState,
+    ThemeColors,
+    ThemeConfig,
+    VisualizationConfig,
+)
 
 
 class TestStepState:
@@ -100,6 +108,57 @@ class TestVisualizationConfig:
         )
         assert viz.config["array"] == [1, 2, 3]
         assert viz.config["target"] == 5
+
+    def test_theme_defaults_to_dark(self):
+        """Theme should default to dark preset."""
+        viz = VisualizationConfig(type="array_pointers")
+        assert viz.theme.preset == "dark"
+
+
+class TestThemeConfig:
+    """Tests for ThemeConfig model."""
+
+    def test_default_preset(self):
+        """ThemeConfig should default to dark preset."""
+        theme = ThemeConfig()
+        assert theme.preset == "dark"
+
+    def test_resolve_colors_dark(self):
+        """Dark preset should resolve to expected colors."""
+        theme = ThemeConfig(preset="dark")
+        colors = theme.resolve_colors()
+        assert colors["background"] == "#1a1a2e"
+        assert colors["pointer_left"] == "#e94560"
+
+    def test_resolve_colors_light(self):
+        """Light preset should resolve to expected colors."""
+        theme = ThemeConfig(preset="light")
+        colors = theme.resolve_colors()
+        assert colors["background"] == "#f5f5f5"
+        assert colors["text"] == "#333"
+
+    def test_resolve_colors_neetcode(self):
+        """Neetcode preset should resolve to expected colors."""
+        theme = ThemeConfig(preset="neetcode")
+        colors = theme.resolve_colors()
+        assert colors["background"] == "#0a0a0f"
+
+    def test_color_overrides(self):
+        """Custom colors should override preset values."""
+        theme = ThemeConfig(
+            preset="dark",
+            colors=ThemeColors(background="#000000", title="#ff0000")
+        )
+        colors = theme.resolve_colors()
+        assert colors["background"] == "#000000"
+        assert colors["title"] == "#ff0000"
+        # Non-overridden values should use preset
+        assert colors["text"] == "#eee"
+
+    def test_invalid_preset_rejected(self):
+        """Invalid preset should raise ValidationError."""
+        with pytest.raises(ValidationError):
+            ThemeConfig(preset="invalid_theme")
 
 
 class TestSceneSpec:
@@ -195,7 +254,7 @@ class TestSampleSceneFixture:
         assert spec.visualization.type == "array_pointers"
         assert spec.visualization.config["array"] == [2, 7, 11, 15]
         assert spec.visualization.config["target"] == 9
-        assert spec.visualization.config["theme"] == "dark"
+        assert spec.visualization.theme.preset == "dark"
 
     def test_sample_scene_steps(self, sample_scene_data: dict):
         """Sample scene should have expected steps."""

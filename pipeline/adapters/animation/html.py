@@ -89,6 +89,9 @@ class HTMLAnimationAdapter(AnimationAdapter):
         array = viz_config.get("array", [])
         target = viz_config.get("target", 0)
 
+        # Resolve theme colors
+        theme = spec.visualization.get_resolved_theme()
+
         # Convert steps to serializable format
         steps_data = [
             {
@@ -111,6 +114,7 @@ class HTMLAnimationAdapter(AnimationAdapter):
             target=target,
             steps=steps_data,
             timing=timing,
+            theme=theme,
         )
 
         # Ensure output directory exists

@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <style>
+        :root {
+            --bg: {{ theme.background }};
+            --text: {{ theme.text }};
+            --title: {{ theme.title }};
+            --target: {{ theme.target }};
+            --cell-bg: {{ theme.cell_bg }};
+            --cell-border: {{ theme.cell_border }};
+            --cell-text: {{ theme.cell_text }};
+            --pointer-left: {{ theme.pointer_left }};
+            --pointer-right: {{ theme.pointer_right }};
+            --highlight-found: {{ theme.highlight_found }};
+            --highlight-sum: {{ theme.highlight_sum }};
+            --message: {{ theme.message }};
+            --index-label: {{ theme.index_label }};
+            --step-indicator: {{ theme.step_indicator }};
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +29,8 @@
         }
 
         body {
-            background: #1a1a2e;
-            color: #eee;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
             min-height: 100vh;
             display: flex;
@@ -35,13 +52,13 @@
         .title {
             font-size: 28px;
             font-weight: 600;
-            color: #e94560;
+            color: var(--title);
             text-align: center;
         }
 
         .target-display {
             font-size: 20px;
-            color: #16c79a;
+            color: var(--target);
             text-align: center;
         }
 
@@ -62,47 +79,48 @@
             justify-content: center;
             font-size: 28px;
             font-weight: 600;
-            background: #0f3460;
-            border: 3px solid #16c79a;
+            background: var(--cell-bg);
+            border: 3px solid var(--cell-border);
             border-radius: 12px;
             position: relative;
             transition: all 0.3s ease;
+            color: var(--cell-text);
         }
 
         .array-cell.highlight-left {
-            background: #e94560;
-            border-color: #e94560;
+            background: var(--pointer-left);
+            border-color: var(--pointer-left);
             transform: scale(1.1);
         }
 
         .array-cell.highlight-right {
-            background: #00b4d8;
-            border-color: #00b4d8;
+            background: var(--pointer-right);
+            border-color: var(--pointer-right);
             transform: scale(1.1);
         }
 
         .array-cell.highlight-both {
-            background: linear-gradient(135deg, #e94560 50%, #00b4d8 50%);
-            border-color: #f7d716;
+            background: linear-gradient(135deg, var(--pointer-left) 50%, var(--pointer-right) 50%);
+            border-color: var(--highlight-sum);
             transform: scale(1.15);
         }
 
         .array-cell.highlight-sum {
-            box-shadow: 0 0 20px rgba(247, 215, 22, 0.6);
+            box-shadow: 0 0 20px color-mix(in srgb, var(--highlight-sum) 60%, transparent);
         }
 
         .array-cell.found {
-            background: #16c79a;
-            border-color: #16c79a;
+            background: var(--highlight-found);
+            border-color: var(--highlight-found);
             transform: scale(1.2);
-            box-shadow: 0 0 30px rgba(22, 199, 154, 0.8);
+            box-shadow: 0 0 30px color-mix(in srgb, var(--highlight-found) 80%, transparent);
         }
 
         .index-label {
             position: absolute;
             bottom: -28px;
             font-size: 14px;
-            color: #888;
+            color: var(--index-label);
         }
 
         .pointer {
@@ -117,12 +135,12 @@
         }
 
         .pointer.left-pointer {
-            background: #e94560;
+            background: var(--pointer-left);
             color: white;
         }
 
         .pointer.right-pointer {
-            background: #00b4d8;
+            background: var(--pointer-right);
             color: white;
         }
 
@@ -132,7 +150,7 @@
 
         .message-display {
             font-size: 24px;
-            color: #f7d716;
+            color: var(--message);
             text-align: center;
             min-height: 36px;
             transition: opacity 0.3s ease;
@@ -140,7 +158,7 @@
 
         .step-indicator {
             font-size: 14px;
-            color: #666;
+            color: var(--step-indicator);
         }
 
         /* Animation keyframes for pointer movement */
