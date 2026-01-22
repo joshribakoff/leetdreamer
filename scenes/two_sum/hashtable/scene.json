@@ -1,0 +1,76 @@
+{
+  "id": "two_sum_hashtable",
+  "title": "Two Sum: Hash Table O(n)",
+  "description": "Hash table approach for Two Sum problem",
+  "visualization": {
+    "type": "hash_table",
+    "config": {"array": [2, 7, 11, 15], "target": 9}
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "narration": "Hash table approach. One pass.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Hash Table: O(n)"
+      }
+    },
+    {
+      "id": "see_two",
+      "narration": "See two. Need seven to make nine.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": 7,
+        "found_pair": null,
+        "complement": 7,
+        "message": "2 + ? = 9"
+      }
+    },
+    {
+      "id": "store_two",
+      "narration": "Store two at index zero.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "map[2] = 0"
+      }
+    },
+    {
+      "id": "see_seven",
+      "narration": "See seven. Need two.",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": null,
+        "complement": 2,
+        "message": "7 + ? = 9"
+      }
+    },
+    {
+      "id": "found",
+      "narration": "Two is in the map! Found it.",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": [0, 1],
+        "complement": null,
+        "message": "2 + 7 = 9"
+      }
+    }
+  ]
+}
