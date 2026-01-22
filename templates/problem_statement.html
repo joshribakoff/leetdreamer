@@ -439,11 +439,15 @@
                 targetEls.forEach(el => el && el.classList.add('visible'));
             }
 
-            // Apply highlights to array cells
+            // Apply highlights to array cells - scope to visible array
             highlight.forEach(idx => {
-                const cell = document.querySelector(`.array-cell[data-index="${idx}"]`);
-                if (cell) {
-                    cell.classList.add('highlight');
+                // Find which array is visible from the reveal list
+                const visibleArrayId = reveal.find(item => item.match(/^array\d+$/));
+                if (visibleArrayId) {
+                    const cell = document.querySelector(`#${visibleArrayId} .array-cell[data-index="${idx}"]`);
+                    if (cell) {
+                        cell.classList.add('highlight');
+                    }
                 }
             });
 
