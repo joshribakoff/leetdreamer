@@ -196,6 +196,71 @@
             line-height: 1.6;
         }
 
+        /* Visual Array Display */
+        .array-visual {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .array-visual.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .array-cell {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            background: #0f3460;
+            border: 3px solid #16c79a;
+            border-radius: 12px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .array-cell .index {
+            position: absolute;
+            bottom: -24px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .array-cell.highlight {
+            background: #16c79a;
+            border-color: #16c79a;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(22, 199, 154, 0.5);
+        }
+
+        .target-display {
+            text-align: center;
+            font-size: 24px;
+            color: #f7d716;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .target-display.visible {
+            opacity: 1;
+        }
+
+        .target-display span {
+            background: #0f3460;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 2px solid #f7d716;
+        }
+
         .step-indicator {
             position: fixed;
             bottom: 20px;
@@ -228,11 +293,29 @@
         {% for example in examples %}
         <div class="example" id="example{{ loop.index0 }}">
             <div class="example-header">Example {{ loop.index }}</div>
+
+            {% if example.array %}
+            <!-- Visual array display -->
+            <div class="array-visual" id="array{{ loop.index0 }}">
+                {% for val in example.array %}
+                <div class="array-cell" data-index="{{ loop.index0 }}">
+                    {{ val }}
+                    <span class="index">{{ loop.index0 }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="target-display" id="target{{ loop.index0 }}">
+                <span>Target: {{ example.target }}</span>
+            </div>
+            {% else %}
+            <!-- Fallback to text display -->
             <div class="example-row">
                 <span class="example-label">Input:</span>
                 <span class="example-value"><code>{{ example.input }}</code></span>
             </div>
-            <div class="example-row">
+            {% endif %}
+
+            <div class="example-row" style="margin-top: 16px;">
                 <span class="example-label">Output:</span>
                 <span class="example-value"><code>{{ example.output }}</code></span>
             </div>
@@ -268,21 +351,29 @@
 
         // Get example elements
         const exampleEls = [];
+        const arrayEls = [];
+        const targetEls = [];
         for (let i = 0; i < exampleCount; i++) {
             exampleEls.push(document.getElementById(`example${i}`));
+            arrayEls.push(document.getElementById(`array${i}`));
+            targetEls.push(document.getElementById(`target${i}`));
         }
 
-        // Clear all visibility
-        function clearState() {
-            headerEl.classList.remove('visible');
-            descriptionEl.classList.remove('visible');
-            if (constraintsEl) constraintsEl.classList.remove('visible');
-            exampleEls.forEach(el => el && el.classList.remove('visible'));
+        // Get all array cells for highlighting
+        const allCells = document.querySelectorAll('.array-cell');
+
+        // Clear highlight from cells
+        function clearHighlights() {
+            allCells.forEach(cell => cell.classList.remove('highlight'));
         }
 
         // Apply state for a step based on reveal property
         function applyState(state, stepIndex) {
             const reveal = state.reveal || [];
+            const highlight = state.highlight || [];
+
+            // Clear previous highlights
+            clearHighlights();
 
             // Make elements visible based on reveal array
             if (reveal.includes('header') || reveal.includes('title')) {
@@ -297,11 +388,29 @@
 
             // Handle example reveals (e.g., "example1", "example2")
             reveal.forEach(item => {
-                const match = item.match(/^example(\d+)$/);
-                if (match) {
-                    const idx = parseInt(match[1], 10) - 1;
+                const exampleMatch = item.match(/^example(\d+)$/);
+                if (exampleMatch) {
+                    const idx = parseInt(exampleMatch[1], 10) - 1;
                     if (exampleEls[idx]) {
                         exampleEls[idx].classList.add('visible');
+                    }
+                }
+
+                // Handle array visibility (e.g., "array0")
+                const arrayMatch = item.match(/^array(\d+)$/);
+                if (arrayMatch) {
+                    const idx = parseInt(arrayMatch[1], 10);
+                    if (arrayEls[idx]) {
+                        arrayEls[idx].classList.add('visible');
+                    }
+                }
+
+                // Handle target visibility (e.g., "target0")
+                const targetMatch = item.match(/^target(\d+)$/);
+                if (targetMatch) {
+                    const idx = parseInt(targetMatch[1], 10);
+                    if (targetEls[idx]) {
+                        targetEls[idx].classList.add('visible');
                     }
                 }
             });
@@ -312,7 +421,17 @@
                 descriptionEl.classList.add('visible');
                 if (constraintsEl) constraintsEl.classList.add('visible');
                 exampleEls.forEach(el => el && el.classList.add('visible'));
+                arrayEls.forEach(el => el && el.classList.add('visible'));
+                targetEls.forEach(el => el && el.classList.add('visible'));
             }
+
+            // Apply highlights to array cells
+            highlight.forEach(idx => {
+                const cell = document.querySelector(`.array-cell[data-index="${idx}"]`);
+                if (cell) {
+                    cell.classList.add('highlight');
+                }
+            });
 
             // Update step indicator
             stepIndicatorEl.textContent = `Step ${stepIndex + 1} of ${steps.length}`;

@@ -4,7 +4,7 @@ Scene specification schema using Pydantic.
 Defines the data models for scene specifications that drive the animation pipeline.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -14,13 +14,13 @@ class StepState(BaseModel):
     Attributes:
         left: Left pointer index (for two-pointer visualizations)
         right: Right pointer index (for two-pointer visualizations)
-        highlight: Current highlight mode (e.g., "sum", "left_move", "right_move")
+        highlight: Highlight mode string OR list of indices to highlight
         message: Display message for this state
         reveal: List of elements to reveal (for problem_statement visualizations)
     """
     left: Optional[int] = None
     right: Optional[int] = None
-    highlight: Optional[str] = None
+    highlight: Optional[Union[str, List[int]]] = None
     message: Optional[str] = None
     reveal: Optional[List[str]] = None
 
