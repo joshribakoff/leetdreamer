@@ -31,7 +31,7 @@ ANIMATIONS_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(ANIMATIONS_DIR))
 
 from pipeline.orchestrator import PipelineOrchestrator, BuildResult, PipelineError
-from pipeline.adapters.tts import MacOSSayAdapter
+from pipeline.adapters.tts import MacOSSayAdapter, PiperTTSAdapter
 from pipeline.adapters.tts.openai_tts import OpenAITTSAdapter
 from pipeline.adapters.animation import HTMLAnimationAdapter
 from pipeline.adapters.recorder import PlaywrightRecorder
@@ -63,6 +63,8 @@ def create_tts_adapter(tts_name: str, voice: str | None = None, model: str = "tt
         return MacOSSayAdapter(voice=voice or "Samantha")
     elif tts_name == "openai":
         return OpenAITTSAdapter(voice=voice or "onyx", model=model)
+    elif tts_name == "piper":
+        return PiperTTSAdapter()
     else:
         raise ValueError(f"Unknown TTS adapter: {tts_name}")
 
@@ -120,9 +122,9 @@ def main():
     )
     parser.add_argument(
         "--tts",
-        default="macos_say",
-        choices=["macos_say", "openai"],
-        help="TTS adapter to use (default: macos_say)"
+        default="piper",
+        choices=["macos_say", "openai", "piper"],
+        help="TTS adapter to use (default: piper)"
     )
     parser.add_argument(
         "--voice",
