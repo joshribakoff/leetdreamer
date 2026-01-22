@@ -1,0 +1,14 @@
+{
+  "id": "adversarial_single_element",
+  "title": "Single Element Edge Case",
+  "description": "Tests visualization with minimal data - just one element",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [42], "target": 42, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "init", "narration": "Array with a single element.", "state": {"left": 0, "right": 0, "highlight": null, "message": "One element"}},
+    {"id": "both_same", "narration": "Both pointers at index zero.", "state": {"left": 0, "right": 0, "highlight": "sum", "message": "L=R=0"}},
+    {"id": "done", "narration": "Edge case handled.", "state": {"left": 0, "right": 0, "highlight": "found", "message": "Done"}}
+  ]
+}

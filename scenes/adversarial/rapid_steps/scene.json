@@ -1,0 +1,23 @@
+{
+  "id": "adversarial_rapid_steps",
+  "title": "Rapid State Transitions",
+  "description": "Tests rapid narration with 12 very short phrases",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [1, 2, 3, 4, 5], "target": 6, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "s1", "narration": "One.", "state": {"left": 0, "right": 4, "highlight": null, "message": "1"}},
+    {"id": "s2", "narration": "Two.", "state": {"left": 0, "right": 3, "highlight": null, "message": "2"}},
+    {"id": "s3", "narration": "Three.", "state": {"left": 1, "right": 3, "highlight": null, "message": "3"}},
+    {"id": "s4", "narration": "Four.", "state": {"left": 1, "right": 2, "highlight": null, "message": "4"}},
+    {"id": "s5", "narration": "Five.", "state": {"left": 2, "right": 2, "highlight": null, "message": "5"}},
+    {"id": "s6", "narration": "Six.", "state": {"left": 0, "right": 4, "highlight": "sum", "message": "6"}},
+    {"id": "s7", "narration": "Seven.", "state": {"left": 1, "right": 4, "highlight": "sum", "message": "7"}},
+    {"id": "s8", "narration": "Eight.", "state": {"left": 2, "right": 4, "highlight": "sum", "message": "8"}},
+    {"id": "s9", "narration": "Nine.", "state": {"left": 3, "right": 4, "highlight": "sum", "message": "9"}},
+    {"id": "s10", "narration": "Ten.", "state": {"left": 4, "right": 4, "highlight": "found", "message": "10"}},
+    {"id": "s11", "narration": "Eleven.", "state": {"left": 0, "right": 0, "highlight": null, "message": "11"}},
+    {"id": "s12", "narration": "Twelve.", "state": {"left": 0, "right": 4, "highlight": "found", "message": "12"}}
+  ]
+}

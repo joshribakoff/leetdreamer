@@ -1,0 +1,18 @@
+{
+  "id": "adversarial_empty_narration",
+  "title": "Empty Narration Test",
+  "description": "Tests how TTS handles empty or whitespace narration",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [1, 2, 3], "target": 4, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "normal", "narration": "Normal narration.", "state": {"left": 0, "right": 2, "highlight": null, "message": "Normal"}},
+    {"id": "empty", "narration": "", "state": {"left": 1, "right": 2, "highlight": null, "message": "Empty"}},
+    {"id": "whitespace", "narration": "   ", "state": {"left": 1, "right": 1, "highlight": null, "message": "Whitespace"}},
+    {"id": "tabs", "narration": "\t\t", "state": {"left": 0, "right": 1, "highlight": null, "message": "Tabs"}},
+    {"id": "newlines", "narration": "\n\n", "state": {"left": 2, "right": 2, "highlight": null, "message": "Newlines"}},
+    {"id": "mixed", "narration": " \t\n ", "state": {"left": 0, "right": 0, "highlight": null, "message": "Mixed whitespace"}},
+    {"id": "recovery", "narration": "Back to normal.", "state": {"left": 0, "right": 2, "highlight": "found", "message": "Done"}}
+  ]
+}

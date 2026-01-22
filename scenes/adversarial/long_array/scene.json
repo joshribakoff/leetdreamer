@@ -1,0 +1,16 @@
+{
+  "id": "adversarial_long_array",
+  "title": "Long Array Stress Test",
+  "description": "Tests visualization with 25 elements to stress overflow/scrolling",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], "target": 30, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "init", "narration": "Testing a long array with twenty-five elements.", "state": {"left": 0, "right": 24, "highlight": null, "message": "25 elements"}},
+    {"id": "far_pointers", "narration": "Pointers at opposite ends.", "state": {"left": 0, "right": 24, "highlight": "sum", "message": "L=0, R=24"}},
+    {"id": "mid_left", "narration": "Moving left pointer toward middle.", "state": {"left": 12, "right": 24, "highlight": "left_move", "message": "L=12"}},
+    {"id": "mid_both", "narration": "Both pointers near center.", "state": {"left": 11, "right": 13, "highlight": "sum", "message": "L=11, R=13"}},
+    {"id": "done", "narration": "Stress test complete.", "state": {"left": 11, "right": 13, "highlight": "found", "message": "Done"}}
+  ]
+}

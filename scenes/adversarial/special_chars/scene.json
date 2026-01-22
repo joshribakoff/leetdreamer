@@ -1,0 +1,20 @@
+{
+  "id": "adversarial_special_chars",
+  "title": "Special Characters Test",
+  "description": "Tests escaping of quotes, ampersands, and unicode in templates",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [1, 2, 3], "target": 4, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "quotes", "narration": "Testing \"double quotes\" in narration.", "state": {"left": 0, "right": 2, "highlight": null, "message": "\"quotes\""}},
+    {"id": "single_quotes", "narration": "Testing 'single quotes' too.", "state": {"left": 1, "right": 2, "highlight": null, "message": "'single'"}},
+    {"id": "ampersand", "narration": "Ampersand & more text.", "state": {"left": 0, "right": 1, "highlight": null, "message": "A & B"}},
+    {"id": "less_greater", "narration": "Less than < and greater than > symbols.", "state": {"left": 1, "right": 1, "highlight": null, "message": "< >"}},
+    {"id": "unicode_emoji", "narration": "Unicode check mark and arrow symbols.", "state": {"left": 2, "right": 2, "highlight": "sum", "message": "O(n) \u2192 fast"}},
+    {"id": "unicode_math", "narration": "Math symbols like plus minus and infinity.", "state": {"left": 0, "right": 0, "highlight": null, "message": "\u00b1 \u221e \u2260"}},
+    {"id": "backslash", "narration": "Backslash \\ and forward slash /.", "state": {"left": 0, "right": 2, "highlight": null, "message": "\\ /"}},
+    {"id": "dollar", "narration": "Dollar sign $ and percent %.", "state": {"left": 1, "right": 2, "highlight": null, "message": "$100 50%"}},
+    {"id": "done", "narration": "Special characters complete.", "state": {"left": 0, "right": 2, "highlight": "found", "message": "Done!"}}
+  ]
+}
