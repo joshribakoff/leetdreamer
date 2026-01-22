@@ -4,7 +4,8 @@
   "description": "Two pointer technique on sorted array",
   "visualization": {
     "type": "array_pointers",
-    "config": {"array": [2, 7, 11, 15], "target": 9, "theme": "dark"}
+    "config": {"array": [2, 7, 11, 15], "target": 9},
+    "theme": {"preset": "dark"}
   },
   "steps": [
     {"id": "init", "narration": "The two pointer approach starts with pointers at both ends. Left at two, right at fifteen.", "state": {"left": 0, "right": 3, "highlight": null, "message": "Initialize: L=0, R=3"}},
