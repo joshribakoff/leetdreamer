@@ -325,6 +325,66 @@ class TestPlaywrightRecorderIntegration:
             assert result.stat().st_size > 1000  # Should have meaningful content
 
 
+class TestTemplateCSS:
+    """Tests for CSS in animation templates to prevent regressions."""
+
+    @pytest.fixture
+    def template_path(self) -> Path:
+        """Path to the array animation template."""
+        return Path(__file__).parent.parent / "templates" / "array_animation.html"
+
+    def test_no_transition_all_on_array_cell(self, template_path: Path):
+        """Array cells should not use 'transition: all' to prevent flicker.
+
+        When using 'transition: all', the clearState() function causes a visible
+        flicker because background colors transition back to default before the
+        new state is applied. Instead, only specific properties should be animated.
+        """
+        content = template_path.read_text()
+
+        # Extract the .array-cell CSS rule
+        import re
+        array_cell_match = re.search(
+            r'\.array-cell\s*\{[^}]+\}',
+            content,
+            re.DOTALL
+        )
+        assert array_cell_match, ".array-cell CSS rule not found"
+
+        array_cell_css = array_cell_match.group(0)
+
+        # Should NOT have 'transition: all'
+        assert 'transition: all' not in array_cell_css, (
+            "Found 'transition: all' in .array-cell CSS. "
+            "This causes flicker during state changes. "
+            "Use specific properties like 'transition: transform, box-shadow' instead."
+        )
+
+        # SHOULD have some transition for smooth animations
+        assert 'transition:' in array_cell_css or 'transition :' in array_cell_css, (
+            ".array-cell should have transition for transform/box-shadow"
+        )
+
+    def test_no_transition_all_on_pointer(self, template_path: Path):
+        """Pointer elements should not use 'transition: all' to prevent flicker."""
+        content = template_path.read_text()
+
+        import re
+        pointer_match = re.search(
+            r'\.pointer\s*\{[^}]+\}',
+            content,
+            re.DOTALL
+        )
+        assert pointer_match, ".pointer CSS rule not found"
+
+        pointer_css = pointer_match.group(0)
+
+        assert 'transition: all' not in pointer_css, (
+            "Found 'transition: all' in .pointer CSS. "
+            "This can cause flicker when pointers move between cells."
+        )
+
+
 # Mark slow tests so they can be skipped with: pytest -m "not slow"
 def pytest_configure(config):
     config.addinivalue_line("markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')")
