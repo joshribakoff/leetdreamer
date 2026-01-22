@@ -32,6 +32,7 @@ sys.path.insert(0, str(ANIMATIONS_DIR))
 
 from pipeline.orchestrator import PipelineOrchestrator, BuildResult, PipelineError
 from pipeline.adapters.tts import MacOSSayAdapter
+from pipeline.adapters.tts.openai_tts import OpenAITTSAdapter
 from pipeline.adapters.animation import HTMLAnimationAdapter
 from pipeline.adapters.recorder import PlaywrightRecorder
 from pipeline.adapters.merger import FFmpegMerger
@@ -47,18 +48,21 @@ def setup_logging(verbose: bool = False):
     )
 
 
-def create_tts_adapter(tts_name: str, voice: str = "Samantha") -> MacOSSayAdapter:
+def create_tts_adapter(tts_name: str, voice: str | None = None, model: str = "tts-1-hd"):
     """Create a TTS adapter by name.
 
     Args:
         tts_name: Name of the TTS adapter to create
-        voice: Voice to use (for macos_say)
+        voice: Voice to use (macos_say: Samantha, etc. OpenAI: alloy, echo, fable, onyx, nova, shimmer)
+        model: OpenAI model to use (tts-1, tts-1-hd)
 
     Returns:
         TTS adapter instance
     """
     if tts_name == "macos_say":
-        return MacOSSayAdapter(voice=voice)
+        return MacOSSayAdapter(voice=voice or "Samantha")
+    elif tts_name == "openai":
+        return OpenAITTSAdapter(voice=voice or "onyx", model=model)
     else:
         raise ValueError(f"Unknown TTS adapter: {tts_name}")
 
@@ -117,13 +121,19 @@ def main():
     parser.add_argument(
         "--tts",
         default="macos_say",
-        choices=["macos_say"],
+        choices=["macos_say", "openai"],
         help="TTS adapter to use (default: macos_say)"
     )
     parser.add_argument(
         "--voice",
-        default="Samantha",
-        help="Voice for TTS (default: Samantha)"
+        default=None,
+        help="Voice for TTS (macos: Samantha; openai: onyx, alloy, echo, fable, nova, shimmer)"
+    )
+    parser.add_argument(
+        "--model",
+        default="tts-1-hd",
+        choices=["tts-1", "tts-1-hd"],
+        help="OpenAI TTS model (default: tts-1-hd)"
     )
     parser.add_argument(
         "--output", "-o",
@@ -181,7 +191,7 @@ def main():
     # Create adapters
     logger.info("Initializing adapters...")
     try:
-        tts = create_tts_adapter(args.tts, args.voice)
+        tts = create_tts_adapter(args.tts, args.voice, args.model)
         logger.info(f"  TTS: {tts.name}")
 
         animation = HTMLAnimationAdapter(ANIMATIONS_DIR / "templates")

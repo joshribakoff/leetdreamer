@@ -101,6 +101,14 @@ Currently renders: Two Pointers (Two Sum II)
 
 Coming eventually: Sliding Window, Binary Search, DP visualizations, maybe your algorithm if you ask nicely.
 
+## Related Projects
+
+| Project | What It Does |
+|---------|--------------|
+| [LeetDeeper](https://github.com/joshribakoff/leetdeeper) | The study workspace where I actually solve problems. LeetDreamer exists because I got tired of explaining Two Pointers to myself. |
+
+*LeetDeeper is the brain. LeetDreamer is the mouth. Together they form one very nerdy Voltron.*
+
 ## License
 
 MIT - Do whatever you want, just don't blame me when the robot voice mispronounces "deque".
