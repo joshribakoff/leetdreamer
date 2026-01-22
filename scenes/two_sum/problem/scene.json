@@ -107,6 +107,31 @@
       "state": {"reveal": ["header", "description", "example2", "array1", "target1"]}
     },
     {
+      "id": "think2",
+      "narration": "Which two numbers?",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"]}
+    },
+    {
+      "id": "highlight2_first",
+      "narration": "Two.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1]}
+    },
+    {
+      "id": "highlight2_second",
+      "narration": "Plus four.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
+      "id": "found2",
+      "narration": "That's six.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
+      "id": "return2",
+      "narration": "Indices one and two.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
       "id": "outro",
       "narration": "Now let's think about how to solve it.",
       "state": {"reveal": ["header", "description"]}
