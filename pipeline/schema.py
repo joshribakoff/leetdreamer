@@ -5,25 +5,21 @@ Defines the data models for scene specifications that drive the animation pipeli
 """
 
 from typing import Any, Dict, List, Literal, Optional, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class StepState(BaseModel):
     """Visualization state for a single step.
 
-    Attributes:
-        left: Left pointer index (for two-pointer visualizations)
-        right: Right pointer index (for two-pointer visualizations)
-        highlight: Highlight mode string OR list of indices to highlight
-        message: Display message for this state
-        reveal: List of elements to reveal (for problem_statement visualizations)
-        current_index: Current array index (for hash_table visualizations)
-        stored_indices: Indices already stored in map (for hash_table visualizations)
-        hashmap_entries: List of {value, index} entries (for hash_table visualizations)
-        lookup_value: Value being looked up in map (for hash_table visualizations)
-        found_pair: Pair of indices found (for hash_table visualizations)
-        complement: Complement value being sought (for hash_table visualizations)
+    Uses extra="allow" to support arbitrary pointer names (i, j, left, right, etc.)
+    without requiring schema changes for each new visualization type.
+
+    Common fields are typed for IDE support, but any additional fields
+    will pass through to templates.
     """
+    model_config = ConfigDict(extra="allow")
+
+    # Common fields (typed for convenience, but not exhaustive)
     left: Optional[int] = None
     right: Optional[int] = None
     highlight: Optional[Union[str, List[int]]] = None

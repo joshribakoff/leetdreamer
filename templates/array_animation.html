@@ -230,44 +230,77 @@
             pointers.right.forEach(p => p && p.classList.remove('visible'));
         }
 
+        // Normalize pointers - support both legacy (left/right, i/j) and new (pointers array)
+        function normalizePointers(state) {
+            if (state.pointers && state.pointers.length > 0) {
+                return state.pointers;
+            }
+            // Legacy: prefer left/right if set, otherwise fall back to i/j
+            const ptrs = [];
+            const hasLeft = state.left !== null && state.left !== undefined;
+            const hasRight = state.right !== null && state.right !== undefined;
+            const hasI = state.i !== null && state.i !== undefined;
+            const hasJ = state.j !== null && state.j !== undefined;
+
+            if (hasLeft) {
+                ptrs.push({ index: state.left, label: 'L' });
+            } else if (hasI) {
+                ptrs.push({ index: state.i, label: 'i' });
+            }
+
+            if (hasRight) {
+                ptrs.push({ index: state.right, label: 'R' });
+            } else if (hasJ) {
+                ptrs.push({ index: state.j, label: 'j' });
+            }
+            return ptrs;
+        }
+
         // Apply state for a step
         function applyState(state, stepIndex) {
             clearState();
 
-            const pointers = getPointers();
-            const { left, right, highlight, message } = state;
+            const domPointers = getPointers();
+            const ptrs = normalizePointers(state);
+            const { highlight, message } = state;
 
-            // Show pointers
-            if (left !== null && left !== undefined && pointers.left[left]) {
-                pointers.left[left].classList.add('visible');
+            // Get indices for highlighting
+            const idx0 = ptrs[0]?.index;
+            const idx1 = ptrs[1]?.index;
+
+            // Show pointers and update labels
+            if (idx0 !== undefined && domPointers.left[idx0]) {
+                domPointers.left[idx0].textContent = ptrs[0].label;
+                domPointers.left[idx0].classList.add('visible');
             }
-            if (right !== null && right !== undefined && pointers.right[right]) {
-                pointers.right[right].classList.add('visible');
+            if (idx1 !== undefined && domPointers.right[idx1]) {
+                domPointers.right[idx1].textContent = ptrs[1].label;
+                domPointers.right[idx1].classList.add('visible');
             }
 
             // Apply cell highlights
-            if (left !== null && left !== undefined && cells[left]) {
-                if (left === right) {
-                    cells[left].classList.add('highlight-both');
+            if (idx0 !== undefined && cells[idx0]) {
+                if (idx0 === idx1) {
+                    cells[idx0].classList.add('highlight-both');
                 } else {
-                    cells[left].classList.add('highlight-left');
+                    cells[idx0].classList.add('highlight-left');
                 }
             }
-            if (right !== null && right !== undefined && cells[right] && left !== right) {
-                cells[right].classList.add('highlight-right');
+            if (idx1 !== undefined && cells[idx1] && idx0 !== idx1) {
+                cells[idx1].classList.add('highlight-right');
             }
 
             // Apply special highlights based on highlight type
-            if (highlight === 'sum' && left !== null && right !== null) {
-                cells[left].classList.add('highlight-sum');
-                cells[right].classList.add('highlight-sum');
-            } else if (highlight === 'found' && left !== null && right !== null) {
-                cells[left].classList.add('found');
-                cells[right].classList.add('found');
-            } else if (highlight === 'left_move' && left !== null && cells[left]) {
-                cells[left].classList.add('animating');
-            } else if (highlight === 'right_move' && right !== null && cells[right]) {
-                cells[right].classList.add('animating');
+            if (highlight === 'sum' && idx0 !== undefined && idx1 !== undefined) {
+                cells[idx0].classList.add('highlight-sum');
+                cells[idx1].classList.add('highlight-sum');
+            } else if (highlight === 'found' && idx0 !== undefined && idx1 !== undefined) {
+                cells[idx0].classList.add('found');
+                cells[idx1].classList.add('found');
+            } else if (highlight === 'left_move' && idx0 !== undefined && cells[idx0]) {
+                cells[idx0].classList.add('animating');
+            } else if (highlight === 'right_move' && idx1 !== undefined && cells[idx1]) {
+                cells[idx1].classList.add('animating');
             }
 
             // Update message
