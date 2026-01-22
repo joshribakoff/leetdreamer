@@ -1,0 +1,16 @@
+{
+  "id": "two_sum_brute",
+  "title": "Two Sum - Brute Force O(n²)",
+  "description": "Brute force approach checking every pair",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [2, 7, 11, 15], "target": 9, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "intro", "narration": "Brute force.", "state": {"i": null, "j": null, "highlight": null, "message": "Brute Force O(n²)"}},
+    {"id": "approach", "narration": "Check every pair.", "state": {"i": null, "j": null, "highlight": null, "message": "Check every pair"}},
+    {"id": "start_i0", "narration": "Start with two.", "state": {"i": 0, "j": null, "highlight": "i", "message": "i = 0"}},
+    {"id": "check_0_1", "narration": "Two plus seven?", "state": {"i": 0, "j": 1, "highlight": "sum", "message": "2 + 7 = ?"}},
+    {"id": "found", "narration": "That's nine. Found it.", "state": {"i": 0, "j": 1, "highlight": "found", "message": "2 + 7 = 9 ✓"}}
+  ]
+}
