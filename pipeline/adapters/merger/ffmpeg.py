@@ -252,3 +252,140 @@ class FFmpegMerger(MergerAdapter):
         self._run_ffmpeg(args, "Merging video and audio")
 
         return output_path
+
+    def concat_videos(
+        self,
+        video_paths: List[Path],
+        output_path: Path,
+        transition: str = "cut"
+    ) -> Path:
+        """Concatenate multiple video files into one.
+
+        Uses FFmpeg's concat demuxer for cuts or filter_complex for fades.
+
+        Args:
+            video_paths: List of paths to video files to concatenate (in order)
+            output_path: Path where the combined video should be saved
+            transition: Transition type ("cut" or "fade")
+
+        Returns:
+            Path to the concatenated video file
+
+        Raises:
+            FFmpegMergerError: If FFmpeg fails or input files don't exist
+            ValueError: If video_paths is empty or transition is invalid
+        """
+        if not video_paths:
+            raise ValueError("video_paths cannot be empty")
+
+        if transition not in ("cut", "fade"):
+            raise ValueError(f"Invalid transition: {transition}. Must be 'cut' or 'fade'")
+
+        # Validate all input files exist
+        for path in video_paths:
+            if not path.exists():
+                raise FFmpegMergerError(f"Video file not found: {path}")
+
+        # Ensure output directory exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Single file - just copy/re-encode
+        if len(video_paths) == 1:
+            logger.info(f"Single video file, copying: {video_paths[0]} -> {output_path}")
+            args = [
+                "-y",
+                "-i", str(video_paths[0]),
+                "-c:v", "libx264",
+                "-c:a", "aac",
+                str(output_path),
+            ]
+            self._run_ffmpeg(args, "Copying single video file")
+            return output_path
+
+        if transition == "cut":
+            return self._concat_videos_cut(video_paths, output_path)
+        else:
+            return self._concat_videos_fade(video_paths, output_path)
+
+    def _concat_videos_cut(self, video_paths: List[Path], output_path: Path) -> Path:
+        """Concatenate videos with hard cuts using concat demuxer."""
+        # Create a temporary file list for concat demuxer
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+            filelist_path = Path(f.name)
+            for path in video_paths:
+                escaped_path = str(path).replace("'", "'\\''")
+                f.write(f"file '{escaped_path}'\n")
+
+        try:
+            args = [
+                "-y",
+                "-f", "concat",
+                "-safe", "0",
+                "-i", str(filelist_path),
+                "-c:v", "libx264",
+                "-c:a", "aac",
+                str(output_path),
+            ]
+            self._run_ffmpeg(args, "Concatenating videos with cut transition")
+        finally:
+            filelist_path.unlink(missing_ok=True)
+
+        return output_path
+
+    def _concat_videos_fade(
+        self,
+        video_paths: List[Path],
+        output_path: Path,
+        fade_duration: float = 0.5
+    ) -> Path:
+        """Concatenate videos with crossfade transitions using filter_complex."""
+        n = len(video_paths)
+
+        # Build input arguments
+        input_args = []
+        for path in video_paths:
+            input_args.extend(["-i", str(path)])
+
+        # Build filter_complex for crossfades
+        # Each video gets labeled [v0], [a0], [v1], [a1], etc.
+        # Then we chain xfade filters between consecutive clips
+        filter_parts = []
+
+        # For 2 videos: [0:v][1:v]xfade=transition=fade:duration=0.5[vout];[0:a][1:a]acrossfade=d=0.5[aout]
+        # For 3+ videos: chain them together
+        if n == 2:
+            filter_complex = (
+                f"[0:v][1:v]xfade=transition=fade:duration={fade_duration}[vout];"
+                f"[0:a][1:a]acrossfade=d={fade_duration}[aout]"
+            )
+        else:
+            # Chain multiple clips
+            # Video chain
+            v_filter = f"[0:v][1:v]xfade=transition=fade:duration={fade_duration}[v1]"
+            for i in range(2, n):
+                prev_label = f"v{i-1}"
+                next_label = f"v{i}" if i < n - 1 else "vout"
+                v_filter += f";[{prev_label}][{i}:v]xfade=transition=fade:duration={fade_duration}[{next_label}]"
+
+            # Audio chain
+            a_filter = f"[0:a][1:a]acrossfade=d={fade_duration}[a1]"
+            for i in range(2, n):
+                prev_label = f"a{i-1}"
+                next_label = f"a{i}" if i < n - 1 else "aout"
+                a_filter += f";[{prev_label}][{i}:a]acrossfade=d={fade_duration}[{next_label}]"
+
+            filter_complex = f"{v_filter};{a_filter}"
+
+        args = [
+            "-y",
+            *input_args,
+            "-filter_complex", filter_complex,
+            "-map", "[vout]",
+            "-map", "[aout]",
+            "-c:v", "libx264",
+            "-c:a", "aac",
+            str(output_path),
+        ]
+        self._run_ffmpeg(args, "Concatenating videos with fade transition")
+
+        return output_path

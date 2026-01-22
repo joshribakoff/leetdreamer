@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
-from .schema import SceneSpec
+from .schema import SceneSpec, CompositeSceneSpec
 from .adapters.base import TTSAdapter, AnimationAdapter, RecorderAdapter, MergerAdapter
 
 logger = logging.getLogger(__name__)
@@ -221,6 +221,8 @@ class PipelineOrchestrator:
     def build_from_file(self, scene_path: Path) -> BuildResult:
         """Load scene spec from JSON file and build.
 
+        Detects composite scenes (type: "composite") and handles them specially.
+
         Args:
             scene_path: Path to the scene.json file
 
@@ -239,13 +241,105 @@ class PipelineOrchestrator:
 
         try:
             scene_data = json.loads(scene_path.read_text())
-            scene_spec = SceneSpec(**scene_data)
         except json.JSONDecodeError as e:
             raise PipelineError(f"Invalid JSON in scene file: {e}") from e
+
+        # Check if this is a composite scene
+        if scene_data.get("type") == "composite":
+            return self._build_composite(scene_data, scene_path)
+
+        try:
+            scene_spec = SceneSpec(**scene_data)
         except Exception as e:
             raise PipelineError(f"Failed to parse scene spec: {e}") from e
 
         return self.build(scene_spec)
+
+    def _build_composite(self, scene_data: dict, scene_path: Path) -> BuildResult:
+        """Build a composite scene by building children and concatenating.
+
+        Args:
+            scene_data: Raw scene data dict with type: "composite"
+            scene_path: Path to the composite scene file (for resolving refs)
+
+        Returns:
+            BuildResult with output path and timing information
+        """
+        try:
+            composite_spec = CompositeSceneSpec(**scene_data)
+        except Exception as e:
+            raise PipelineError(f"Failed to parse composite scene spec: {e}") from e
+
+        scene_id = composite_spec.id
+        scene_dir = scene_path.parent
+        scene_output_dir = self.output_dir / scene_id
+        scene_output_dir.mkdir(parents=True, exist_ok=True)
+
+        logger.info(f"[{scene_id}] Building composite scene with {len(composite_spec.children)} children")
+
+        child_results: List[BuildResult] = []
+        child_video_paths: List[Path] = []
+        total_timing: List[float] = []
+        intermediate_files = {"children": []}
+
+        try:
+            # Build each child scene
+            for i, child_ref in enumerate(composite_spec.children):
+                child_path = (scene_dir / child_ref.ref).resolve()
+                logger.info(f"[{scene_id}] Building child {i+1}/{len(composite_spec.children)}: {child_ref.ref}")
+
+                if not child_path.exists():
+                    raise PipelineError(f"Child scene not found: {child_path}")
+
+                child_result = self.build_from_file(child_path)
+                child_results.append(child_result)
+
+                if not child_result.success:
+                    raise PipelineError(f"Child scene failed: {child_result.error}")
+
+                child_video_paths.append(child_result.output_path)
+                total_timing.extend(child_result.timing)
+                intermediate_files["children"].append({
+                    "ref": child_ref.ref,
+                    "output": str(child_result.output_path),
+                    "timing": child_result.timing,
+                })
+
+            # Concatenate all child videos
+            logger.info(f"[{scene_id}] Concatenating {len(child_video_paths)} videos")
+            final_path = scene_output_dir / "final.mp4"
+            self.merger.concat_videos(
+                child_video_paths,
+                final_path,
+                transition=composite_spec.transitions
+            )
+            intermediate_files["final"] = str(final_path)
+
+            total_duration = sum(total_timing)
+            logger.info(f"[{scene_id}] Composite build complete: {final_path}")
+            logger.info(f"[{scene_id}] Total duration: {total_duration:.2f}s")
+
+            return BuildResult(
+                scene_id=scene_id,
+                output_path=final_path,
+                timing=total_timing,
+                total_duration=total_duration,
+                success=True,
+                intermediate_files=intermediate_files,
+            )
+
+        except Exception as e:
+            error_msg = f"Composite pipeline failed: {e}"
+            logger.error(f"[{scene_id}] {error_msg}")
+            return BuildResult(
+                scene_id=scene_id,
+                output_path=scene_output_dir / "final.mp4",
+                timing=total_timing,
+                total_duration=sum(total_timing) if total_timing else 0.0,
+                success=False,
+                error=error_msg,
+                intermediate_files=intermediate_files,
+            )
 
     def build_from_file_dry_run(self, scene_path: Path) -> BuildResult:
         """Load scene spec and validate without building.

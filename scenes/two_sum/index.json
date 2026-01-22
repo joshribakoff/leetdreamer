@@ -1,0 +1,11 @@
+{
+  "id": "two_sum_complete",
+  "type": "composite",
+  "children": [
+    {"ref": "problem/scene.json"},
+    {"ref": "brute/scene.json"},
+    {"ref": "hashtable/scene.json"},
+    {"ref": "../two_pointers/scene.json"}
+  ],
+  "transitions": "cut"
+}

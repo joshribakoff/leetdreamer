@@ -157,3 +157,22 @@ class MergerAdapter(ABC):
             Path to the concatenated audio file
         """
         pass
+
+    @abstractmethod
+    def concat_videos(
+        self,
+        video_paths: List[Path],
+        output_path: Path,
+        transition: str = "cut"
+    ) -> Path:
+        """Concatenate multiple video files into one.
+
+        Args:
+            video_paths: List of paths to video files to concatenate
+            output_path: Path where the combined video should be saved
+            transition: Transition type ("cut" or "fade")
+
+        Returns:
+            Path to the concatenated video file
+        """
+        pass

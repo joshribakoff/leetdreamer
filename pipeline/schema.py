@@ -4,7 +4,7 @@ Scene specification schema using Pydantic.
 Defines the data models for scene specifications that drive the animation pipeline.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -74,3 +74,27 @@ class SceneSpec(BaseModel):
     def get_step_ids(self) -> List[str]:
         """Extract all step IDs."""
         return [step.id for step in self.steps]
+
+
+class ChildSceneRef(BaseModel):
+    """Reference to a child scene in a composite.
+
+    Attributes:
+        ref: Relative path to the child scene JSON file
+    """
+    ref: str
+
+
+class CompositeSceneSpec(BaseModel):
+    """Composite scene specification for stitching multiple scenes.
+
+    Attributes:
+        id: Unique identifier for this composite scene
+        type: Must be "composite" to identify this as a composite scene
+        children: List of references to child scenes
+        transitions: Transition type between scenes ("cut" or "fade")
+    """
+    id: str
+    type: Literal["composite"] = "composite"
+    children: List[ChildSceneRef]
+    transitions: Literal["cut", "fade"] = "cut"
