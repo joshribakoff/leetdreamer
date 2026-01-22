@@ -245,7 +245,7 @@
             text-align: center;
             font-size: 24px;
             color: #f7d716;
-            margin-top: 20px;
+            margin-top: 40px;  /* More space to clear array indexes */
             opacity: 0;
             transition: opacity 0.5s ease;
         }
@@ -367,13 +367,24 @@
             allCells.forEach(cell => cell.classList.remove('highlight'));
         }
 
+        // Clear all visibility
+        function clearVisibility() {
+            headerEl.classList.remove('visible');
+            descriptionEl.classList.remove('visible');
+            if (constraintsEl) constraintsEl.classList.remove('visible');
+            exampleEls.forEach(el => el && el.classList.remove('visible'));
+            arrayEls.forEach(el => el && el.classList.remove('visible'));
+            targetEls.forEach(el => el && el.classList.remove('visible'));
+        }
+
         // Apply state for a step based on reveal property
         function applyState(state, stepIndex) {
             const reveal = state.reveal || [];
             const highlight = state.highlight || [];
 
-            // Clear previous highlights
+            // Clear previous state
             clearHighlights();
+            clearVisibility();
 
             // Make elements visible based on reveal array
             if (reveal.includes('header') || reveal.includes('title')) {
