@@ -16,11 +16,13 @@ class StepState(BaseModel):
         right: Right pointer index (for two-pointer visualizations)
         highlight: Current highlight mode (e.g., "sum", "left_move", "right_move")
         message: Display message for this state
+        reveal: List of elements to reveal (for problem_statement visualizations)
     """
     left: Optional[int] = None
     right: Optional[int] = None
     highlight: Optional[str] = None
     message: Optional[str] = None
+    reveal: Optional[List[str]] = None
 
 
 class Step(BaseModel):

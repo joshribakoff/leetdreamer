@@ -1,0 +1,68 @@
+{
+  "id": "two_sum_problem",
+  "title": "Two Sum - Problem Statement",
+  "description": "Problem statement visualization for LeetCode Two Sum",
+  "visualization": {
+    "type": "problem_statement",
+    "config": {
+      "problem_title": "1. Two Sum",
+      "difficulty": "easy",
+      "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
+      "constraints": [
+        "<code>2 <= nums.length <= 10^4</code>",
+        "<code>-10^9 <= nums[i] <= 10^9</code>",
+        "<code>-10^9 <= target <= 10^9</code>",
+        "Only one valid answer exists."
+      ],
+      "examples": [
+        {
+          "input": "nums = [2,7,11,15], target = 9",
+          "output": "[0,1]",
+          "explanation": "Because nums[0] + nums[1] == 9, we return [0, 1]."
+        },
+        {
+          "input": "nums = [3,2,4], target = 6",
+          "output": "[1,2]",
+          "explanation": "Because nums[1] + nums[2] == 6, we return [1, 2]."
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "narration": "Let's look at the Two Sum problem.",
+      "state": {"reveal": ["header"]}
+    },
+    {
+      "id": "description",
+      "narration": "Given an array of integers and a target, we need to find two numbers that add up to the target.",
+      "state": {"reveal": ["header", "description"]}
+    },
+    {
+      "id": "constraints",
+      "narration": "The constraints tell us the array can have up to ten thousand elements.",
+      "state": {"reveal": ["header", "description", "constraints"]}
+    },
+    {
+      "id": "example1",
+      "narration": "In the first example, we have the array two, seven, eleven, fifteen with target nine.",
+      "state": {"reveal": ["header", "description", "constraints", "example1"]}
+    },
+    {
+      "id": "example1_explain",
+      "narration": "Two plus seven equals nine, so we return indices zero and one.",
+      "state": {"reveal": ["header", "description", "constraints", "example1"]}
+    },
+    {
+      "id": "example2",
+      "narration": "The second example has array three, two, four with target six.",
+      "state": {"reveal": ["header", "description", "constraints", "example1", "example2"]}
+    },
+    {
+      "id": "complete",
+      "narration": "Now let's explore different approaches to solve this problem.",
+      "state": {"reveal": ["all"]}
+    }
+  ]
+}

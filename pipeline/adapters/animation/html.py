@@ -56,6 +56,7 @@ class HTMLAnimationAdapter(AnimationAdapter):
         template_map = {
             "array_pointers": "array_animation.html",
             "array": "array_animation.html",
+            "problem_statement": "problem_statement.html",
         }
         return template_map.get(viz_type, "array_animation.html")
 
@@ -86,8 +87,6 @@ class HTMLAnimationAdapter(AnimationAdapter):
 
         # Extract visualization config
         viz_config = spec.visualization.config
-        array = viz_config.get("array", [])
-        target = viz_config.get("target", 0)
 
         # Convert steps to serializable format
         steps_data = [
@@ -99,19 +98,35 @@ class HTMLAnimationAdapter(AnimationAdapter):
                     "right": step.state.right,
                     "highlight": step.state.highlight,
                     "message": step.state.message,
+                    "reveal": step.state.reveal,
                 }
             }
             for step in spec.steps
         ]
 
-        # Render template
-        html_content = template.render(
-            title=spec.title,
-            array=array,
-            target=target,
-            steps=steps_data,
-            timing=timing,
-        )
+        # Build template context based on visualization type
+        if spec.visualization.type == "problem_statement":
+            html_content = template.render(
+                title=spec.title,
+                problem_title=viz_config.get("problem_title", spec.title),
+                difficulty=viz_config.get("difficulty", "medium"),
+                description=viz_config.get("description", ""),
+                constraints=viz_config.get("constraints", []),
+                examples=viz_config.get("examples", []),
+                steps=steps_data,
+                timing=timing,
+            )
+        else:
+            # Array-based visualizations
+            array = viz_config.get("array", [])
+            target = viz_config.get("target", 0)
+            html_content = template.render(
+                title=spec.title,
+                array=array,
+                target=target,
+                steps=steps_data,
+                timing=timing,
+            )
 
         # Ensure output directory exists
         output_path = Path(output_path)
