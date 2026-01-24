@@ -313,6 +313,24 @@
         // Timeline execution
         let currentStep = 0;
         let elapsedTime = 0;
+        let currentAudio = null;
+
+        function playStepAudio(stepIndex) {
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            // Play audio for this step
+            const audio = new Audio(`step_${stepIndex}.wav`);
+            audio.volume = 1.0;
+            currentAudio = audio;
+            audio.play().catch(e => {
+                // Audio might not be available or autoplay blocked
+                console.log('Audio playback:', e.message);
+            });
+        }
 
         function runTimeline() {
             if (currentStep >= steps.length) {
@@ -323,6 +341,7 @@
             const duration = timing[currentStep] * 1000; // Convert to ms
 
             applyState(step.state, currentStep);
+            playStepAudio(currentStep);
 
             setTimeout(() => {
                 currentStep++;
