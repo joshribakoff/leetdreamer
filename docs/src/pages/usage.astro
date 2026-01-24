@@ -21,7 +21,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <h2>Creating a Scene Spec</h2>
   <p>Scene specifications live in <code>scenes/</code> and define:</p>
-  <pre><code>{
+  <pre><code set:html={`{
   "title": "Two Sum II",
   "template": "two_pointers",
   "steps": [
@@ -33,7 +33,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
     }
   ]
-}</code></pre>
+}`} /></pre>
 
   <h2>Narration Guidelines</h2>
   <ul>
