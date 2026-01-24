@@ -308,27 +308,34 @@ class FFmpegMerger(MergerAdapter):
             return self._concat_videos_fade(video_paths, output_path)
 
     def _concat_videos_cut(self, video_paths: List[Path], output_path: Path) -> Path:
-        """Concatenate videos with hard cuts using concat demuxer."""
-        # Create a temporary file list for concat demuxer
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
-            filelist_path = Path(f.name)
-            for path in video_paths:
-                escaped_path = str(path).replace("'", "'\\''")
-                f.write(f"file '{escaped_path}'\n")
+        """Concatenate videos with hard cuts using filter_complex concat filter.
 
-        try:
-            args = [
-                "-y",
-                "-f", "concat",
-                "-safe", "0",
-                "-i", str(filelist_path),
-                "-c:v", "libx264",
-                "-c:a", "aac",
-                str(output_path),
-            ]
-            self._run_ffmpeg(args, "Concatenating videos with cut transition")
-        finally:
-            filelist_path.unlink(missing_ok=True)
+        Uses filter_complex instead of concat demuxer to ensure proper audio
+        synchronization across segment boundaries.
+        """
+        n = len(video_paths)
+
+        # Build input arguments
+        input_args = []
+        for path in video_paths:
+            input_args.extend(["-i", str(path)])
+
+        # Build filter_complex: [0:v][0:a][1:v][1:a]...concat=n=N:v=1:a=1[outv][outa]
+        stream_refs = "".join(f"[{i}:v][{i}:a]" for i in range(n))
+        filter_complex = f"{stream_refs}concat=n={n}:v=1:a=1[outv][outa]"
+
+        args = [
+            "-y",
+            *input_args,
+            "-filter_complex", filter_complex,
+            "-map", "[outv]",
+            "-map", "[outa]",
+            "-c:v", "libx264",
+            "-c:a", "aac",
+            "-ar", "44100",
+            str(output_path),
+        ]
+        self._run_ffmpeg(args, "Concatenating videos with cut transition")
 
         return output_path
 
