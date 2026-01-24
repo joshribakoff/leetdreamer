@@ -394,6 +394,8 @@
 
         let currentStep = 0;
 
+        {% include 'includes/audio.html' %}
+
         function runTimeline() {
             if (currentStep >= steps.length) return;
 
@@ -401,6 +403,7 @@
             const duration = timing[currentStep] * 1000;
 
             applyState(step.state, currentStep);
+            playStepAudio(currentStep);
 
             setTimeout(() => {
                 currentStep++;
