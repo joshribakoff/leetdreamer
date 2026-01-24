@@ -2,23 +2,46 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title="Docs">
   <h1>LeetDreamer</h1>
-  <p>A modular pipeline for generating narrated algorithm visualization videos.</p>
+  <p class="subtitle">Generate narrated algorithm visualization videos from JSON specs.</p>
 
-  <h2>Audio-First Approach</h2>
-  <p>LeetDreamer uses an audio-first methodology: generate TTS audio, extract durations, then drive animation timing from those durations. This ensures narration and visuals stay perfectly synchronized.</p>
+  <div class="command-block">
+    <code>python build.py scenes/two_sum/hashtable/scene.json -v</code>
+  </div>
 
-  <h2>Key Features</h2>
-  <ul>
-    <li>Modular adapter architecture for swappable components</li>
-    <li>Schema-validated scene specifications</li>
-    <li>Single source of truth controls both animation and narration</li>
-    <li>Jinja2-powered animation templates</li>
-  </ul>
+  <h2>Audio-First Pipeline</h2>
+  <p>LeetDreamer generates TTS audio first, extracts durations, then drives animation timing from those durations. Narration and visuals stay perfectly synchronized without manual tweaking.</p>
 
-  <h2>Quick Start</h2>
-  <pre><code>python build.py scenes/two_pointers/scene.json -v</code></pre>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3 data-icon="🎯">Single Source of Truth</h3>
+      <p>One JSON file controls both animation state and narration text. No sync issues.</p>
+    </div>
+    <div class="feature-card">
+      <h3 data-icon="🔌">Adapter Architecture</h3>
+      <p>Swap TTS engines, recording backends, and merge strategies without changing scene specs.</p>
+    </div>
+    <div class="feature-card">
+      <h3 data-icon="✅">Schema Validation</h3>
+      <p>Pydantic validates every scene spec. Catch errors before rendering starts.</p>
+    </div>
+    <div class="feature-card">
+      <h3 data-icon="🎨">Jinja2 Templates</h3>
+      <p>HTML templates receive step data and timing. Full control over visualization style.</p>
+    </div>
+  </div>
 
-  <p>See the <a href="/architecture">Architecture</a> page for details on how the pipeline works, or jump to <a href="/usage">Usage</a> to get started.</p>
+  <h2>How It Works</h2>
+  <ol>
+    <li><strong>Parse scene spec</strong> — Load JSON, validate with Pydantic schema</li>
+    <li><strong>Generate audio</strong> — TTS adapter creates WAV files for each narration step</li>
+    <li><strong>Extract durations</strong> — Measure each audio clip to drive timing</li>
+    <li><strong>Render animation</strong> — Jinja2 template produces timed HTML animation</li>
+    <li><strong>Record video</strong> — Playwright captures the animation to WebM</li>
+    <li><strong>Merge tracks</strong> — FFmpeg combines video + audio into final MP4</li>
+  </ol>
+
+  <h2>Next Steps</h2>
+  <p>Read the <a href="/architecture">Architecture</a> docs to understand the pipeline internals, or jump to <a href="/usage">Usage</a> to start building scenes.</p>
 </BaseLayout>
