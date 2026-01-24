@@ -1,0 +1,20 @@
+# LeetDreamer
+
+> A modular pipeline for generating narrated algorithm visualization videos from JSON scene specifications.
+
+## Docs
+
+- [Home](https://leetdreamer.dev/): Overview of the audio-first pipeline approach
+- [Architecture](https://leetdreamer.dev/architecture): Pipeline stages, adapters, templates
+- [Usage](https://leetdreamer.dev/usage): Scene specs, state properties, narration guidelines
+
+## Key Concepts
+
+- **Audio-first**: Generate TTS audio, extract durations, drive animation timing from audio
+- **Adapters**: Swappable components for TTS, recording, merging
+- **Scene specs**: JSON files with narration and visualization state per step
+- **Templates**: Jinja2 HTML templates render the visualization
+
+## Source
+
+- [GitHub](https://github.com/joshribakoff/leetdreamer)
