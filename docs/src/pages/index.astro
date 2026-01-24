@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Home">
+  <h1>LeetDreamer</h1>
+  <p>A modular pipeline for generating narrated algorithm visualization videos.</p>
+
+  <h2>Audio-First Approach</h2>
+  <p>LeetDreamer uses an audio-first methodology: generate TTS audio, extract durations, then drive animation timing from those durations. This ensures narration and visuals stay perfectly synchronized.</p>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li>Modular adapter architecture for swappable components</li>
+    <li>Schema-validated scene specifications</li>
+    <li>Single source of truth controls both animation and narration</li>
+    <li>Jinja2-powered animation templates</li>
+  </ul>
+
+  <h2>Quick Start</h2>
+  <pre><code>python build.py scenes/two_pointers/scene.json -v</code></pre>
+
+  <p>See the <a href="/architecture">Architecture</a> page for details on how the pipeline works, or jump to <a href="/usage">Usage</a> to get started.</p>
+</BaseLayout>
