@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Architecture">
+  <h1>Architecture</h1>
+  <p>LeetDreamer is built around a modular pipeline with swappable adapters at each stage.</p>
+
+  <h2>Pipeline Overview</h2>
+  <p>The build process flows through these stages:</p>
+  <ol>
+    <li><strong>Scene Spec</strong> - JSON defining narration steps and visualization state</li>
+    <li><strong>TTS Adapter</strong> - Generates audio from narration text</li>
+    <li><strong>Template Renderer</strong> - Produces HTML animation from scene spec</li>
+    <li><strong>Recording Adapter</strong> - Captures animation to video</li>
+    <li><strong>Merge Adapter</strong> - Combines audio and video tracks</li>
+  </ol>
+
+  <h2>Adapters</h2>
+  <p>Each pipeline stage uses an adapter pattern, allowing easy swapping of implementations:</p>
+  <ul>
+    <li><code>TTSAdapter</code> - Text-to-speech generation (OpenAI, local, etc.)</li>
+    <li><code>RecordingAdapter</code> - Video capture (Playwright, Puppeteer)</li>
+    <li><code>MergeAdapter</code> - Audio/video merging (FFmpeg)</li>
+  </ul>
+
+  <h2>Scene Specifications</h2>
+  <p>Scenes are defined in JSON with Pydantic schema validation. Each scene contains:</p>
+  <ul>
+    <li>Metadata (title, algorithm type)</li>
+    <li>Steps array with narration text and visualization state</li>
+    <li>Template reference for rendering</li>
+  </ul>
+
+  <h2>Templates</h2>
+  <p>Animation templates are Jinja2 HTML files that receive step data and timing information. Templates handle:</p>
+  <ul>
+    <li>Visual rendering of data structures</li>
+    <li>Animation timing based on audio durations</li>
+    <li>Smooth transitions between steps</li>
+  </ul>
+</BaseLayout>
+
+<style>
+  ol {
+    margin: 1rem 0 1rem 1.5rem;
+    color: #b8b8b8;
+  }
+
+  ol li {
+    margin-bottom: 0.5rem;
+  }
+</style>

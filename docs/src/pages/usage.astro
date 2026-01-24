@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Usage">
+  <h1>Getting Started</h1>
+  <p>This guide covers how to build scenes with LeetDreamer.</p>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>Python 3.10+</li>
+    <li>FFmpeg (at <code>~/.local/bin/ffmpeg</code>)</li>
+    <li>OpenAI API key (for TTS)</li>
+  </ul>
+
+  <h2>Building a Scene</h2>
+  <p>Run the build script with a scene specification:</p>
+  <pre><code>python build.py scenes/two_pointers/scene.json -v</code></pre>
+
+  <p>The <code>-v</code> flag enables verbose output to see pipeline progress.</p>
+
+  <h2>Creating a Scene Spec</h2>
+  <p>Scene specifications live in <code>scenes/</code> and define:</p>
+  <pre><code>{
+  "title": "Two Sum II",
+  "template": "two_pointers",
+  "steps": [
+    {
+      "narration": "We start with two pointers.",
+      "state": {
+        "left": 0,
+        "right": 6
+      }
+    }
+  ]
+}</code></pre>
+
+  <h2>Narration Guidelines</h2>
+  <ul>
+    <li>One small phrase per step</li>
+    <li>Be specific: "move the right pointer left" not "move right again"</li>
+    <li>Keep pace comfortable for comprehension</li>
+  </ul>
+
+  <h2>Output</h2>
+  <p>Generated videos are saved to <code>output/</code> with the scene name and timestamp.</p>
+</BaseLayout>
