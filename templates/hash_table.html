@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #e94560;
+            text-align: center;
+        }
+
+        .target-display {
+            font-size: 20px;
+            color: #16c79a;
+            text-align: center;
+        }
+
+        .visualization {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        /* Array section */
+        .array-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-label {
+            font-size: 16px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px 30px;
+        }
+
+        .array-cell {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 600;
+            background: #0f3460;
+            border: 3px solid #16c79a;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .array-cell.current {
+            background: #e94560;
+            border-color: #e94560;
+            transform: scale(1.1);
+        }
+
+        .array-cell.found {
+            background: #16c79a;
+            border-color: #16c79a;
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(22, 199, 154, 0.7);
+        }
+
+        .array-cell.stored {
+            border-color: #f7d716;
+        }
+
+        .index-label {
+            position: absolute;
+            bottom: -24px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -36px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 5px;
+            background: #e94560;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pointer.visible {
+            opacity: 1;
+        }
+
+        /* Hash map section */
+        .hashmap-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hashmap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+            background: #0f3460;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #16c79a;
+        }
+
+        .hashmap-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 2px solid #16213e;
+            margin-bottom: 8px;
+        }
+
+        .hashmap-header span {
+            font-size: 14px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .hashmap-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #16213e;
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease;
+        }
+
+        .hashmap-entry.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .hashmap-entry.highlight {
+            background: #16c79a;
+            box-shadow: 0 0 15px rgba(22, 199, 154, 0.5);
+        }
+
+        .hashmap-entry.lookup {
+            background: #f7d716;
+            color: #1a1a2e;
+        }
+
+        .hashmap-key {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f7d716;
+        }
+
+        .hashmap-entry.highlight .hashmap-key,
+        .hashmap-entry.lookup .hashmap-key {
+            color: #1a1a2e;
+        }
+
+        .hashmap-value {
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .hashmap-entry.highlight .hashmap-value,
+        .hashmap-entry.lookup .hashmap-value {
+            color: #1a1a2e;
+        }
+
+        .hashmap-empty {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Complement display */
+        .complement-display {
+            font-size: 20px;
+            color: #00b4d8;
+            text-align: center;
+            min-height: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .complement-display.visible {
+            opacity: 1;
+        }
+
+        /* Message display */
+        .message-display {
+            font-size: 22px;
+            color: #f7d716;
+            text-align: center;
+            min-height: 32px;
+            transition: opacity 0.3s ease;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .array-cell.animating {
+            animation: pulse 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">{{ title }}</h1>
+        <div class="target-display">Target: {{ target }}</div>
+
+        <div class="visualization">
+            <div class="array-section">
+                <div class="section-label">Array</div>
+                <div class="array-container">
+                    {% for value in array %}
+                    <div class="array-cell" data-index="{{ loop.index0 }}" data-value="{{ value }}">
+                        {{ value }}
+                        <span class="index-label">{{ loop.index0 }}</span>
+                        <span class="pointer" id="ptr{{ loop.index0 }}">i</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="hashmap-section">
+                <div class="section-label">Hash Map</div>
+                <div class="hashmap-container" id="hashmap">
+                    <div class="hashmap-header">
+                        <span>Value</span>
+                        <span>Index</span>
+                    </div>
+                    <div class="hashmap-empty" id="hashmapEmpty">empty</div>
+                    {% for value in array %}
+                    <div class="hashmap-entry" id="entry{{ value }}" data-value="{{ value }}">
+                        <span class="hashmap-key">{{ value }}</span>
+                        <span class="hashmap-value" id="entryIdx{{ value }}">-</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="complement-display" id="complement"></div>
+        <div class="message-display" id="message"></div>
+        <div class="step-indicator" id="stepIndicator"></div>
+    </div>
+
+    <script>
+        const steps = {{ steps | tojson | safe }};
+        const timing = {{ timing | tojson | safe }};
+        const arrayData = {{ array | tojson | safe }};
+        const target = {{ target }};
+
+        const totalDuration = timing.reduce((sum, t) => sum + t, 0);
+        window.animationDuration = totalDuration;
+
+        const cells = document.querySelectorAll('.array-cell');
+        const messageEl = document.getElementById('message');
+        const complementEl = document.getElementById('complement');
+        const stepIndicatorEl = document.getElementById('stepIndicator');
+        const hashmapEmptyEl = document.getElementById('hashmapEmpty');
+
+        function clearState() {
+            cells.forEach(cell => {
+                cell.classList.remove('current', 'found', 'stored', 'animating');
+                const ptr = document.getElementById(`ptr${cell.dataset.index}`);
+                if (ptr) ptr.classList.remove('visible');
+            });
+            document.querySelectorAll('.hashmap-entry').forEach(entry => {
+                entry.classList.remove('highlight', 'lookup');
+            });
+            complementEl.classList.remove('visible');
+        }
+
+        function applyState(state, stepIndex) {
+            clearState();
+
+            const { current_index, stored_indices, hashmap_entries, lookup_value, found_pair, message, complement } = state;
+
+            // Show pointer at current index
+            if (current_index !== null && current_index !== undefined) {
+                const ptr = document.getElementById(`ptr${current_index}`);
+                if (ptr) ptr.classList.add('visible');
+                if (cells[current_index]) {
+                    cells[current_index].classList.add('current');
+                }
+            }
+
+            // Mark stored cells
+            if (stored_indices && stored_indices.length > 0) {
+                stored_indices.forEach(idx => {
+                    if (cells[idx]) cells[idx].classList.add('stored');
+                });
+            }
+
+            // Show hashmap entries
+            if (hashmap_entries && hashmap_entries.length > 0) {
+                hashmapEmptyEl.style.display = 'none';
+                hashmap_entries.forEach(entry => {
+                    const entryEl = document.getElementById(`entry${entry.value}`);
+                    const idxEl = document.getElementById(`entryIdx${entry.value}`);
+                    if (entryEl) {
+                        entryEl.classList.add('visible');
+                        if (idxEl) idxEl.textContent = entry.index;
+                    }
+                });
+            } else {
+                hashmapEmptyEl.style.display = 'block';
+            }
+
+            // Highlight lookup in hashmap
+            if (lookup_value !== null && lookup_value !== undefined) {
+                const entryEl = document.getElementById(`entry${lookup_value}`);
+                if (entryEl && entryEl.classList.contains('visible')) {
+                    entryEl.classList.add('lookup');
+                }
+            }
+
+            // Found pair highlighting
+            if (found_pair && found_pair.length === 2) {
+                cells[found_pair[0]].classList.remove('current', 'stored');
+                cells[found_pair[1]].classList.remove('current', 'stored');
+                cells[found_pair[0]].classList.add('found');
+                cells[found_pair[1]].classList.add('found');
+
+                const val0 = arrayData[found_pair[0]];
+                const entryEl = document.getElementById(`entry${val0}`);
+                if (entryEl) entryEl.classList.add('highlight');
+            }
+
+            // Show complement
+            if (complement !== null && complement !== undefined) {
+                complementEl.textContent = `Need: ${complement}`;
+                complementEl.classList.add('visible');
+            }
+
+            messageEl.textContent = message || '';
+            stepIndicatorEl.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+        }
+
+        let currentStep = 0;
+
+        {% include 'includes/audio.html' %}
+
+        function runTimeline() {
+            if (currentStep >= steps.length) return;
+
+            const step = steps[currentStep];
+            const duration = timing[currentStep] * 1000;
+
+            applyState(step.state, currentStep);
+            playStepAudio(currentStep);
+
+            setTimeout(() => {
+                currentStep++;
+                runTimeline();
+            }, duration);
+        }
+
+        window.addEventListener('load', () => {
+            window.animationReady = true;
+            setTimeout(runTimeline, 100);
+        });
+    </script>
+</body>
+</html>

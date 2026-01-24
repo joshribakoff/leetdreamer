@@ -1,0 +1,26 @@
+{
+  "id": "two_sum_brute",
+  "title": "Two Sum - Brute Force O(n²)",
+  "description": "Brute force approach checking every pair",
+  "visualization": {
+    "type": "array_pointers",
+    "config": {"array": [2, 7, 11, 15], "target": 9, "theme": "dark"}
+  },
+  "steps": [
+    {"id": "title", "narration": "Brute force.", "state": {"i": null, "j": null, "highlight": null, "message": "Brute Force"}},
+    {"id": "title_pause", "narration": "O of n squared.", "state": {"i": null, "j": null, "highlight": null, "message": "O(n²)"}},
+    {"id": "explain", "narration": "The simplest approach.", "state": {"i": null, "j": null, "highlight": null, "message": "The simplest approach"}},
+    {"id": "explain2", "narration": "Check every possible pair.", "state": {"i": null, "j": null, "highlight": null, "message": "Check every pair"}},
+    {"id": "explain3", "narration": "Two nested loops.", "state": {"i": null, "j": null, "highlight": null, "message": "Two nested loops"}},
+    {"id": "show_array", "narration": "Here's our array.", "state": {"i": null, "j": null, "highlight": null, "message": "Target: 9"}},
+    {"id": "start_i0", "narration": "Start with the first element.", "state": {"i": 0, "j": null, "highlight": "i", "message": "i = 0"}},
+    {"id": "pause_i0", "narration": "Two.", "state": {"i": 0, "j": null, "highlight": "i", "message": "nums[0] = 2"}},
+    {"id": "check_0_1", "narration": "Compare with every other element.", "state": {"i": 0, "j": 1, "highlight": "sum", "message": "Check pair"}},
+    {"id": "calc_0_1", "narration": "Two plus seven.", "state": {"i": 0, "j": 1, "highlight": "sum", "message": "2 + 7 = ?"}},
+    {"id": "found", "narration": "That's nine.", "state": {"i": 0, "j": 1, "highlight": "found", "message": "2 + 7 = 9 ✓"}},
+    {"id": "found_pause", "narration": "Found it.", "state": {"i": 0, "j": 1, "highlight": "found", "message": "Found!"}},
+    {"id": "complexity", "narration": "We got lucky here.", "state": {"i": 0, "j": 1, "highlight": "found", "message": "Got lucky"}},
+    {"id": "worst_case", "narration": "Worst case checks n squared pairs.", "state": {"i": null, "j": null, "highlight": null, "message": "Worst: O(n²)"}},
+    {"id": "can_do_better", "narration": "Can we do better?", "state": {"i": null, "j": null, "highlight": null, "message": "Can we do better?"}}
+  ]
+}

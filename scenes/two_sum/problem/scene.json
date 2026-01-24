@@ -1,0 +1,140 @@
+{
+  "id": "two_sum_problem",
+  "title": "Two Sum - Problem Statement",
+  "description": "Problem statement visualization for LeetCode Two Sum",
+  "visualization": {
+    "type": "problem_statement",
+    "config": {
+      "problem_title": "1. Two Sum",
+      "difficulty": "easy",
+      "description": "Find two numbers in an array that add up to a target value. Return their indices.",
+      "constraints": [],
+      "examples": [
+        {
+          "array": [2, 7, 11, 15],
+          "target": 9,
+          "output": "[0, 1]",
+          "explanation": "These two numbers add up to nine."
+        },
+        {
+          "array": [3, 2, 4],
+          "target": 6,
+          "output": "[1, 2]",
+          "explanation": "Two plus four equals six."
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "narration": "Two Sum.",
+      "state": {"reveal": ["header"]}
+    },
+    {
+      "id": "pause1",
+      "narration": "A classic problem.",
+      "state": {"reveal": ["header"]}
+    },
+    {
+      "id": "goal",
+      "narration": "Find two numbers that add up to a target.",
+      "state": {"reveal": ["header", "description"]}
+    },
+    {
+      "id": "pause2",
+      "narration": "Return their indices.",
+      "state": {"reveal": ["header", "description"]}
+    },
+    {
+      "id": "example1_intro",
+      "narration": "Let's look at an example.",
+      "state": {"reveal": ["header", "description", "example1"]}
+    },
+    {
+      "id": "show_array1",
+      "narration": "Here's our array.",
+      "state": {"reveal": ["header", "description", "example1", "array0"]}
+    },
+    {
+      "id": "show_target1",
+      "narration": "We need to find two numbers that sum to nine.",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"]}
+    },
+    {
+      "id": "think1",
+      "narration": "Looking at the array...",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"]}
+    },
+    {
+      "id": "highlight_first",
+      "narration": "Two.",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"], "highlight": [0]}
+    },
+    {
+      "id": "highlight_second",
+      "narration": "Plus seven.",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"], "highlight": [0, 1]}
+    },
+    {
+      "id": "found1",
+      "narration": "That's nine.",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"], "highlight": [0, 1]}
+    },
+    {
+      "id": "return1",
+      "narration": "So we return indices zero and one.",
+      "state": {"reveal": ["header", "description", "example1", "array0", "target0"], "highlight": [0, 1]}
+    },
+    {
+      "id": "pause3",
+      "narration": "Simple enough.",
+      "state": {"reveal": ["header", "description"]}
+    },
+    {
+      "id": "example2_intro",
+      "narration": "Here's another example.",
+      "state": {"reveal": ["header", "description", "example2"]}
+    },
+    {
+      "id": "show_array2",
+      "narration": "Different array this time.",
+      "state": {"reveal": ["header", "description", "example2", "array1"]}
+    },
+    {
+      "id": "show_target2",
+      "narration": "Target is six.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"]}
+    },
+    {
+      "id": "think2",
+      "narration": "Which two numbers?",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"]}
+    },
+    {
+      "id": "highlight2_first",
+      "narration": "Two.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1]}
+    },
+    {
+      "id": "highlight2_second",
+      "narration": "Plus four.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
+      "id": "found2",
+      "narration": "That's six.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
+      "id": "return2",
+      "narration": "Indices one and two.",
+      "state": {"reveal": ["header", "description", "example2", "array1", "target1"], "highlight": [1, 2]}
+    },
+    {
+      "id": "outro",
+      "narration": "Now let's think about how to solve it.",
+      "state": {"reveal": ["header", "description"]}
+    }
+  ]
+}

@@ -4,23 +4,34 @@ Scene specification schema using Pydantic.
 Defines the data models for scene specifications that drive the animation pipeline.
 """
 
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Literal, Optional, Union
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class StepState(BaseModel):
     """Visualization state for a single step.
 
-    Attributes:
-        left: Left pointer index (for two-pointer visualizations)
-        right: Right pointer index (for two-pointer visualizations)
-        highlight: Current highlight mode (e.g., "sum", "left_move", "right_move")
-        message: Display message for this state
+    Uses extra="allow" to support arbitrary pointer names (i, j, left, right, etc.)
+    without requiring schema changes for each new visualization type.
+
+    Common fields are typed for IDE support, but any additional fields
+    will pass through to templates.
     """
+    model_config = ConfigDict(extra="allow")
+
+    # Common fields (typed for convenience, but not exhaustive)
     left: Optional[int] = None
     right: Optional[int] = None
-    highlight: Optional[str] = None
+    highlight: Optional[Union[str, List[int]]] = None
     message: Optional[str] = None
+    reveal: Optional[List[str]] = None
+    # Hash table visualization fields
+    current_index: Optional[int] = None
+    stored_indices: Optional[List[int]] = None
+    hashmap_entries: Optional[List[Dict[str, Any]]] = None
+    lookup_value: Optional[int] = None
+    found_pair: Optional[List[int]] = None
+    complement: Optional[int] = None
 
 
 class Step(BaseModel):
@@ -72,3 +83,27 @@ class SceneSpec(BaseModel):
     def get_step_ids(self) -> List[str]:
         """Extract all step IDs."""
         return [step.id for step in self.steps]
+
+
+class ChildSceneRef(BaseModel):
+    """Reference to a child scene in a composite.
+
+    Attributes:
+        ref: Relative path to the child scene JSON file
+    """
+    ref: str
+
+
+class CompositeSceneSpec(BaseModel):
+    """Composite scene specification for stitching multiple scenes.
+
+    Attributes:
+        id: Unique identifier for this composite scene
+        type: Must be "composite" to identify this as a composite scene
+        children: List of references to child scenes
+        transitions: Transition type between scenes ("cut" or "fade")
+    """
+    id: str
+    type: Literal["composite"] = "composite"
+    children: List[ChildSceneRef]
+    transitions: Literal["cut", "fade"] = "cut"

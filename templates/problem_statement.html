@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .difficulty-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .difficulty-badge.easy {
+            background: #16c79a;
+            color: #1a1a2e;
+        }
+
+        .difficulty-badge.medium {
+            background: #f7d716;
+            color: #1a1a2e;
+        }
+
+        .difficulty-badge.hard {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .description {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #ccc;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .description.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #16c79a;
+            margin-bottom: 16px;
+        }
+
+        .constraints-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .constraint-item {
+            font-size: 16px;
+            color: #aaa;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .constraint-item::before {
+            content: "\2022";
+            color: #e94560;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .constraint-item code {
+            background: #0f3460;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #f7d716;
+            font-family: inherit;
+        }
+
+        .example {
+            background: #0f3460;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .example.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .example-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00b4d8;
+            margin-bottom: 16px;
+        }
+
+        .example-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .example-label {
+            font-size: 14px;
+            color: #888;
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .example-value {
+            font-size: 14px;
+            color: #eee;
+        }
+
+        .example-value code {
+            background: #1a1a2e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: #f7d716;
+        }
+
+        .example-explanation {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #16213e;
+        }
+
+        .example-explanation .example-label {
+            color: #16c79a;
+        }
+
+        .example-explanation .example-value {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* Visual Array Display */
+        .array-visual {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .array-visual.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .array-cell {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            background: #0f3460;
+            border: 3px solid #16c79a;
+            border-radius: 12px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .array-cell .index {
+            position: absolute;
+            bottom: -24px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .array-cell.highlight {
+            background: #16c79a;
+            border-color: #16c79a;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(22, 199, 154, 0.5);
+        }
+
+        .target-display {
+            text-align: center;
+            font-size: 24px;
+            color: #f7d716;
+            margin-top: 40px;  /* More space to clear array indexes */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .target-display.visible {
+            opacity: 1;
+        }
+
+        .target-display span {
+            background: #0f3460;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 2px solid #f7d716;
+        }
+
+        .step-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="header">
+            <h1 class="title">{{ problem_title }}</h1>
+            <span class="difficulty-badge {{ difficulty }}">{{ difficulty }}</span>
+        </div>
+
+        <div class="description" id="description">{{ description }}</div>
+
+        {% if constraints %}
+        <div class="section" id="constraints">
+            <h2 class="section-title">Constraints</h2>
+            <ul class="constraints-list">
+                {% for constraint in constraints %}
+                <li class="constraint-item">{{ constraint | safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% for example in examples %}
+        <div class="example" id="example{{ loop.index0 }}">
+            <div class="example-header">Example {{ loop.index }}</div>
+
+            {% if example.array %}
+            <!-- Visual array display -->
+            <div class="array-visual" id="array{{ loop.index0 }}">
+                {% for val in example.array %}
+                <div class="array-cell" data-index="{{ loop.index0 }}">
+                    {{ val }}
+                    <span class="index">{{ loop.index0 }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="target-display" id="target{{ loop.index0 }}">
+                <span>Target: {{ example.target }}</span>
+            </div>
+            {% else %}
+            <!-- Fallback to text display -->
+            <div class="example-row">
+                <span class="example-label">Input:</span>
+                <span class="example-value"><code>{{ example.input }}</code></span>
+            </div>
+            {% endif %}
+
+            <div class="example-row" style="margin-top: 16px;">
+                <span class="example-label">Output:</span>
+                <span class="example-value"><code>{{ example.output }}</code></span>
+            </div>
+            {% if example.explanation %}
+            <div class="example-explanation">
+                <div class="example-row">
+                    <span class="example-label">Explanation:</span>
+                    <span class="example-value">{{ example.explanation }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="step-indicator" id="stepIndicator"></div>
+
+    <script>
+        // Scene data from template
+        const steps = {{ steps | tojson | safe }};
+        const timing = {{ timing | tojson | safe }};
+        const exampleCount = {{ examples | length }};
+
+        // Calculate total duration and set for recorder
+        const totalDuration = timing.reduce((sum, t) => sum + t, 0);
+        window.animationDuration = totalDuration;
+
+        // DOM elements
+        const headerEl = document.getElementById('header');
+        const descriptionEl = document.getElementById('description');
+        const constraintsEl = document.getElementById('constraints');
+        const stepIndicatorEl = document.getElementById('stepIndicator');
+
+        // Get example elements
+        const exampleEls = [];
+        const arrayEls = [];
+        const targetEls = [];
+        for (let i = 0; i < exampleCount; i++) {
+            exampleEls.push(document.getElementById(`example${i}`));
+            arrayEls.push(document.getElementById(`array${i}`));
+            targetEls.push(document.getElementById(`target${i}`));
+        }
+
+        // Get all array cells for highlighting
+        const allCells = document.querySelectorAll('.array-cell');
+
+        // Clear highlight from cells
+        function clearHighlights() {
+            allCells.forEach(cell => cell.classList.remove('highlight'));
+        }
+
+        // Clear all visibility
+        function clearVisibility() {
+            headerEl.classList.remove('visible');
+            descriptionEl.classList.remove('visible');
+            if (constraintsEl) constraintsEl.classList.remove('visible');
+            exampleEls.forEach(el => el && el.classList.remove('visible'));
+            arrayEls.forEach(el => el && el.classList.remove('visible'));
+            targetEls.forEach(el => el && el.classList.remove('visible'));
+        }
+
+        // Apply state for a step based on reveal property
+        function applyState(state, stepIndex) {
+            const reveal = state.reveal || [];
+            const highlight = state.highlight || [];
+
+            // Clear previous state
+            clearHighlights();
+            clearVisibility();
+
+            // Make elements visible based on reveal array
+            if (reveal.includes('header') || reveal.includes('title')) {
+                headerEl.classList.add('visible');
+            }
+            if (reveal.includes('description')) {
+                descriptionEl.classList.add('visible');
+            }
+            if (reveal.includes('constraints') && constraintsEl) {
+                constraintsEl.classList.add('visible');
+            }
+
+            // Handle example reveals (e.g., "example1", "example2")
+            reveal.forEach(item => {
+                const exampleMatch = item.match(/^example(\d+)$/);
+                if (exampleMatch) {
+                    const idx = parseInt(exampleMatch[1], 10) - 1;
+                    if (exampleEls[idx]) {
+                        exampleEls[idx].classList.add('visible');
+                    }
+                }
+
+                // Handle array visibility (e.g., "array0")
+                const arrayMatch = item.match(/^array(\d+)$/);
+                if (arrayMatch) {
+                    const idx = parseInt(arrayMatch[1], 10);
+                    if (arrayEls[idx]) {
+                        arrayEls[idx].classList.add('visible');
+                    }
+                }
+
+                // Handle target visibility (e.g., "target0")
+                const targetMatch = item.match(/^target(\d+)$/);
+                if (targetMatch) {
+                    const idx = parseInt(targetMatch[1], 10);
+                    if (targetEls[idx]) {
+                        targetEls[idx].classList.add('visible');
+                    }
+                }
+            });
+
+            // Handle "all" reveal
+            if (reveal.includes('all')) {
+                headerEl.classList.add('visible');
+                descriptionEl.classList.add('visible');
+                if (constraintsEl) constraintsEl.classList.add('visible');
+                exampleEls.forEach(el => el && el.classList.add('visible'));
+                arrayEls.forEach(el => el && el.classList.add('visible'));
+                targetEls.forEach(el => el && el.classList.add('visible'));
+            }
+
+            // Apply highlights to array cells - scope to visible array
+            highlight.forEach(idx => {
+                // Find which array is visible from the reveal list
+                const visibleArrayId = reveal.find(item => item.match(/^array\d+$/));
+                if (visibleArrayId) {
+                    const cell = document.querySelector(`#${visibleArrayId} .array-cell[data-index="${idx}"]`);
+                    if (cell) {
+                        cell.classList.add('highlight');
+                    }
+                }
+            });
+
+            // Update step indicator
+            stepIndicatorEl.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+        }
+
+        // Timeline execution
+        let currentStep = 0;
+
+        {% include 'includes/audio.html' %}
+
+        function runTimeline() {
+            if (currentStep >= steps.length) {
+                return;
+            }
+
+            const step = steps[currentStep];
+            const duration = timing[currentStep] * 1000;
+
+            applyState(step.state, currentStep);
+            playStepAudio(currentStep);
+
+            setTimeout(() => {
+                currentStep++;
+                runTimeline();
+            }, duration);
+        }
+
+        // Signal that animation is ready and start
+        window.addEventListener('load', () => {
+            window.animationReady = true;
+            setTimeout(runTimeline, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+{
+  "id": "two_sum_hashtable",
+  "title": "Two Sum: Hash Table O(n)",
+  "description": "Hash table approach for Two Sum problem",
+  "visualization": {
+    "type": "hash_table",
+    "config": {"array": [2, 7, 11, 15], "target": 9}
+  },
+  "steps": [
+    {
+      "id": "title",
+      "narration": "Hash table approach.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Hash Table"
+      }
+    },
+    {
+      "id": "title_pause",
+      "narration": "O of n.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "O(n)"
+      }
+    },
+    {
+      "id": "key_insight",
+      "narration": "The key insight.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Key insight"
+      }
+    },
+    {
+      "id": "explain_complement",
+      "narration": "For each number, we know exactly what we need.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "We know what we need"
+      }
+    },
+    {
+      "id": "explain_complement2",
+      "narration": "The complement. Target minus the current number.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "complement = target - num"
+      }
+    },
+    {
+      "id": "explain_map",
+      "narration": "Store numbers in a hash map for instant lookup.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Hash map = O(1) lookup"
+      }
+    },
+    {
+      "id": "start",
+      "narration": "Let's walk through it.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Target: 9"
+      }
+    },
+    {
+      "id": "see_two",
+      "narration": "First element. Two.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "nums[0] = 2"
+      }
+    },
+    {
+      "id": "need_seven",
+      "narration": "What do we need? Nine minus two.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": 7,
+        "found_pair": null,
+        "complement": 7,
+        "message": "9 - 2 = 7"
+      }
+    },
+    {
+      "id": "check_map_empty",
+      "narration": "Is seven in the map?",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": 7,
+        "found_pair": null,
+        "complement": 7,
+        "message": "7 in map?"
+      }
+    },
+    {
+      "id": "not_found",
+      "narration": "No. Map is empty.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "Not found"
+      }
+    },
+    {
+      "id": "store_two",
+      "narration": "Store two in the map.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "map[2] = 0"
+      }
+    },
+    {
+      "id": "store_pause",
+      "narration": "Value maps to index.",
+      "state": {
+        "current_index": 0,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "value → index"
+      }
+    },
+    {
+      "id": "see_seven",
+      "narration": "Next element. Seven.",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "nums[1] = 7"
+      }
+    },
+    {
+      "id": "need_two",
+      "narration": "What do we need? Nine minus seven.",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": null,
+        "complement": 2,
+        "message": "9 - 7 = 2"
+      }
+    },
+    {
+      "id": "check_map",
+      "narration": "Is two in the map?",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": null,
+        "complement": 2,
+        "message": "2 in map?"
+      }
+    },
+    {
+      "id": "found",
+      "narration": "Yes!",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": [0, 1],
+        "complement": null,
+        "message": "Found!"
+      }
+    },
+    {
+      "id": "found_explain",
+      "narration": "Two plus seven equals nine.",
+      "state": {
+        "current_index": 1,
+        "stored_indices": [0],
+        "hashmap_entries": [{"value": 2, "index": 0}],
+        "lookup_value": 2,
+        "found_pair": [0, 1],
+        "complement": null,
+        "message": "2 + 7 = 9 ✓"
+      }
+    },
+    {
+      "id": "one_pass",
+      "narration": "One pass through the array.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": [0, 1],
+        "complement": null,
+        "message": "One pass"
+      }
+    },
+    {
+      "id": "complexity",
+      "narration": "O of n time. O of n space.",
+      "state": {
+        "current_index": null,
+        "stored_indices": [],
+        "hashmap_entries": [],
+        "lookup_value": null,
+        "found_pair": null,
+        "complement": null,
+        "message": "O(n) time, O(n) space"
+      }
+    }
+  ]
+}

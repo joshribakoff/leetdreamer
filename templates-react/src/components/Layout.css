@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1a1a2e;
+  color: #eee;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.layout-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #e94560;
+  text-align: center;
+}
+
+.message-display {
+  font-size: 24px;
+  color: #f7d716;
+  text-align: center;
+  min-height: 36px;
+  transition: opacity 0.3s ease;
+}
+
+.step-indicator {
+  font-size: 14px;
+  color: #666;
+}

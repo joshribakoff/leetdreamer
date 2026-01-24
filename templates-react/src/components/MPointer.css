@@ -1,0 +1,35 @@
+.pointer {
+  position: absolute;
+  top: -40px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.pointer.left-pointer {
+  background: #e94560;
+  color: white;
+}
+
+.pointer.right-pointer {
+  background: #00b4d8;
+  color: white;
+}
+
+.pointer.visible {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
