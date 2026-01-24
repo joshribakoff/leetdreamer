@@ -12,101 +12,455 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title} | LeetDreamer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style is:global>
+      :root {
+        --bg-deep: #0d0d1a;
+        --bg-main: #1a1a2e;
+        --bg-elevated: #16213e;
+        --bg-surface: #0f3460;
+        --accent-teal: #16c79a;
+        --accent-coral: #e94560;
+        --accent-gold: #f7d716;
+        --text-bright: #ffffff;
+        --text-primary: #e8e8e8;
+        --text-muted: #8892b0;
+        --text-dim: #5a6785;
+        --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+        --font-display: 'Space Grotesk', sans-serif;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
-        font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-        background: #1a1a2e;
-        color: #e8e8e8;
-        line-height: 1.6;
+        font-family: var(--font-mono);
+        background: var(--bg-deep);
+        color: var(--text-primary);
+        line-height: 1.7;
         min-height: 100vh;
+        position: relative;
       }
 
-      a {
-        color: #16c79a;
-        text-decoration: none;
+      /* Subtle grid background */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(22, 199, 154, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(22, 199, 154, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
       }
 
-      a:hover {
-        color: #e94560;
+      /* Radial glow at top */
+      body::after {
+        content: '';
+        position: fixed;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 800px;
+        height: 600px;
+        background: radial-gradient(ellipse, rgba(22, 199, 154, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Header/Nav */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(13, 13, 26, 0.95) 100%);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(22, 199, 154, 0.2);
       }
 
       nav {
+        max-width: 1000px;
+        margin: 0 auto;
         display: flex;
-        gap: 2rem;
-        padding: 1.5rem 2rem;
-        background: #16213e;
-        border-bottom: 1px solid #0f3460;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
       }
 
-      nav a {
-        font-size: 0.9rem;
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--accent-teal), var(--accent-coral));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        box-shadow: 0 0 20px rgba(22, 199, 154, 0.3);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .nav-links a {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent-teal);
+        background: rgba(22, 199, 154, 0.1);
+      }
+
+      .nav-links a.active {
+        color: var(--accent-teal);
+      }
+
+      .nav-links a.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        background: var(--accent-teal);
+        border-radius: 50%;
+      }
+
+      /* Main content */
+      main {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 4rem 2rem 6rem;
+      }
+
+      /* Typography */
+      h1 {
+        font-family: var(--font-display);
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        margin-bottom: 1rem;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+
+      h1::before {
+        content: '>';
+        color: var(--accent-teal);
+        margin-right: 0.5rem;
+        font-family: var(--font-mono);
+        font-weight: 400;
+        opacity: 0.7;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-bottom: 3rem;
+        padding-left: 2rem;
+        border-left: 2px solid var(--accent-teal);
+      }
+
+      h2 {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin: 3rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      h2::before {
+        content: '#';
+        color: var(--accent-coral);
+        font-family: var(--font-mono);
+        font-weight: 400;
+        font-size: 1.25rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        margin: 2rem 0 0.75rem;
+      }
+
+      p {
+        margin-bottom: 1.25rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      strong {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      /* Links */
+      a {
+        color: var(--accent-teal);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      a:hover {
+        color: var(--accent-coral);
+      }
+
+      /* Code */
+      code {
+        font-family: var(--font-mono);
+        background: var(--bg-elevated);
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        font-size: 0.85em;
+        color: var(--accent-gold);
+        border: 1px solid rgba(247, 215, 22, 0.2);
+      }
+
+      pre {
+        background: var(--bg-main);
+        padding: 1.5rem;
+        border-radius: 12px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid var(--bg-surface);
+        position: relative;
+      }
+
+      pre::before {
+        content: 'bash';
+        position: absolute;
+        top: 0.75rem;
+        right: 1rem;
+        font-size: 0.7rem;
+        color: var(--text-dim);
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
 
-      main {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 3rem 2rem;
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text-primary);
+        font-size: 0.9rem;
       }
 
-      h1 {
-        font-size: 2.5rem;
-        color: #16c79a;
-        margin-bottom: 1.5rem;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-        color: #e94560;
-        margin: 2rem 0 1rem;
-      }
-
-      p {
-        margin-bottom: 1rem;
-        color: #b8b8b8;
-      }
-
-      code {
-        background: #16213e;
-        padding: 0.2em 0.4em;
-        border-radius: 4px;
-        font-size: 0.9em;
-      }
-
-      pre {
-        background: #16213e;
-        padding: 1rem;
-        border-radius: 8px;
-        overflow-x: auto;
-        margin: 1rem 0;
-        border: 1px solid #0f3460;
-      }
-
-      ul {
-        margin: 1rem 0 1rem 1.5rem;
-        color: #b8b8b8;
+      /* Lists */
+      ul, ol {
+        margin: 1rem 0 1.5rem 0;
+        padding-left: 0;
+        list-style: none;
       }
 
       li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      ul li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent-teal);
+        font-weight: 600;
+      }
+
+      ol {
+        counter-reset: item;
+      }
+
+      ol li {
+        counter-increment: item;
+      }
+
+      ol li::before {
+        content: counter(item) '.';
+        position: absolute;
+        left: 0;
+        color: var(--accent-coral);
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
+      /* Cards/Boxes */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .feature-card {
+        background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-elevated) 100%);
+        border: 1px solid var(--bg-surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        border-color: var(--accent-teal);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(22, 199, 154, 0.1);
+      }
+
+      .feature-card h3 {
+        color: var(--text-bright);
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .feature-card h3::before {
+        content: attr(data-icon);
+        font-size: 1.25rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        font-size: 0.85rem;
+      }
+
+      /* Command block */
+      .command-block {
+        background: var(--bg-main);
+        border: 1px solid var(--bg-surface);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin: 2rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .command-block::before {
+        content: '$';
+        color: var(--accent-teal);
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .command-block code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text-primary);
+        flex: 1;
+      }
+
+      /* Footer */
+      footer {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        border-top: 1px solid var(--bg-surface);
+      }
+
+      footer a {
+        color: var(--text-muted);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      main > * {
+        animation: fadeIn 0.5s ease backwards;
+      }
+
+      main > *:nth-child(1) { animation-delay: 0.1s; }
+      main > *:nth-child(2) { animation-delay: 0.15s; }
+      main > *:nth-child(3) { animation-delay: 0.2s; }
+      main > *:nth-child(4) { animation-delay: 0.25s; }
+      main > *:nth-child(5) { animation-delay: 0.3s; }
+      main > *:nth-child(6) { animation-delay: 0.35s; }
+      main > *:nth-child(7) { animation-delay: 0.4s; }
+      main > *:nth-child(8) { animation-delay: 0.45s; }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        main {
+          padding: 2rem 1rem 4rem;
+        }
       }
     </style>
   </head>
   <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/architecture">Architecture</a>
-      <a href="/usage">Usage</a>
-    </nav>
+    <header>
+      <nav>
+        <a href="/" class="logo">
+          <span class="logo-icon">▶</span>
+          LeetDreamer
+        </a>
+        <div class="nav-links">
+          <a href="/">Docs</a>
+          <a href="/architecture">Architecture</a>
+          <a href="/usage">Usage</a>
+          <a href="https://github.com/joshribakoff/leetdreamer" target="_blank">GitHub</a>
+        </div>
+      </nav>
+    </header>
     <main>
       <slot />
     </main>
+    <footer>
+      Built for algorithm visualization · <a href="https://github.com/joshribakoff/leetdreamer">View source</a>
+    </footer>
   </body>
 </html>
