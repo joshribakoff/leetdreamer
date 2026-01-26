@@ -66,7 +66,10 @@
             border: 3px solid #16c79a;
             border-radius: 12px;
             position: relative;
-            transition: all 0.3s ease;
+            /* Only transition transform/box-shadow, NOT background/border.
+               This prevents the flicker caused by clearing all classes
+               before applying new ones - background now changes instantly. */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .array-cell.highlight-left {
@@ -113,7 +116,9 @@
             padding: 4px 10px;
             border-radius: 6px;
             opacity: 0;
-            transition: all 0.4s ease;
+            /* Only transition opacity, not position-related properties.
+               Prevents flicker when pointers move between cells. */
+            transition: opacity 0.3s ease;
         }
 
         .pointer.left-pointer {
@@ -135,7 +140,7 @@
             color: #f7d716;
             text-align: center;
             min-height: 36px;
-            transition: opacity 0.3s ease;
+            /* No transition - instant text updates prevent flicker */
         }
 
         .step-indicator {
